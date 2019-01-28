@@ -2,11 +2,14 @@ import tcod as libtcod
 
 from entity import Entity
 from input_handlers import handle_keys
+from render_functions import clear_all, render_all
 
 def main():
     #sets varaibles for screen width and height (used later on)
     screen_width = 80
     screen_height = 50
+    map_width = 80
+    map_height = 45
 
     player = Entity(int(screen_width / 2), int(screen_height / 2), '@', libtcod.white)
     npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), '@', libtcod.yellow)
@@ -30,17 +33,11 @@ def main():
         #updates the key and mouse variables with any key or mouse events
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
 
-        #sets the foreground color of console 0 to white
-        libtcod.console_set_default_foreground(con, libtcod.white)
-
-        #puts an @ character at the middle of the screen with no background
-        libtcod.console_put_char(con, player_x, player_y, '@', libtcod.BKGND_NONE)
-
-        libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
+        render_all(con, entities, screen_width, screen_height)
 
         libtcod.console_flush()
 
-        libtcod.console_put_char(con, player_x, player_y, ' ', libtcod.BKGND_NONE)
+        clear_all(con, entities)
 
         action = handle_keys(key)
 
