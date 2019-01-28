@@ -27,6 +27,3 @@ def handle_keys(key):
         return {'exit' : True}
 
     return {}
-
-    #test
-    #additional test
