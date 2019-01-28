@@ -18,6 +18,8 @@ class GameMap:
 
         return tiles
 
+
+    #CHECK IF THIS CAN BE SIMPLIFIED LATER
     def is_blocked(self, x, y):
         if self.tiles[x][y].blocked:
             return True
