@@ -6,6 +6,7 @@ from map_objects.game_map import GameMap
 from render_functions import clear_all, render_all
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
+from components.fighter import Fighter
 
 def main():
     #sets varaibles for screen width and height (used later on)
@@ -31,7 +32,8 @@ def main():
         'light_ground': libtcod.Color(200, 180, 50)
     }
 
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks = True)
+    fighter_component = Fighter(hp = 30, defense = 2, power = 5)
+    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks = True, fighter = fighter_component)
     entities = [npc, player]
 
     #sets the font of the console to arial10x10.png
@@ -99,8 +101,8 @@ def main():
 
         if game_state = GameStates.ENEMY_TURN:
             for entity in entities:
-                if entity != player:
-                    print("The " + entity.name + " does nothing.")
+                if entity.ai:
+                    entity.ai.take_turn()
 
             game_state = GameStates.PLAYER_TURN
 
