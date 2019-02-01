@@ -34,7 +34,7 @@ def main():
 
     fighter_component = Fighter(hp = 30, defense = 2, power = 5)
     player = Entity(0, 0, '@', libtcod.white, 'Player', blocks = True, fighter = fighter_component)
-    entities = [npc, player]
+    entities = [player]
 
     #sets the font of the console to arial10x10.png
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE
@@ -99,7 +99,7 @@ def main():
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
-        if game_state = GameStates.ENEMY_TURN:
+        if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
                 if entity.ai:
                     entity.ai.take_turn()
