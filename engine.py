@@ -91,7 +91,7 @@ def main():
                     player.move(dx, dy)
                     fov_recompute = True
 
-            game_state = GameStates.PLAYER_TURN
+            game_state = GameStates.ENEMY_TURN
 
         if exit:
             return True
