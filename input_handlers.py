@@ -1,6 +1,7 @@
 import tcod as libtcod
 
 def handle_keys(key):
+    key_char = chr(key.c)
     #movement keys
     if key.vk == libtcod.KEY_KP8:
         return {'move' : (0, -1)}
