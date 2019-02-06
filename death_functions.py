@@ -17,5 +17,6 @@ def kill_monster(monster):
     monster.figher = None
     monster.ai = None
     monster.name = 'remains of ' + monster.name
+    monster.render_order = RenderOrder.CORPSE
 
     return death_message
