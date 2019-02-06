@@ -32,6 +32,7 @@ def render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_w
         draw_entity(con, entity, fov_map)
 
     libtcod.console_set_default_foreground(con, libtcod.white)
+    #WHY DOES MAX HEALTH GO TO 300 WHEN UNDER 10 HP?
     libtcod.console_print_ex(con, 1, screen_height - 2, libtcod.BKGND_NONE, libtcod.LEFT, "HP: {0}/{1}".format(player.fighter.hp, player.fighter.max_hp))
 
     libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
