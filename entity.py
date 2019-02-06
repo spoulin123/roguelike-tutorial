@@ -27,7 +27,7 @@ class Entity:
     def move_towards(self, target_x, target_y, game_map, entities):
         dx = target_x - self.x
         dy = target_y = self.y
-        distance = math.sqrt(dx ** x + dy ** 2)
+        distance = math.sqrt(dx ** 2 + dy ** 2)
 
         dx = int(round(dx / distance))
         dy = int(round(dy / distance))
@@ -63,7 +63,7 @@ class Entity:
                 self.x = x
                 self.y = y
         else:
-            self.move_towards(target.x, target.y, game_map, enities)
+            self.move_towards(target.x, target.y, game_map, entities)
 
         libtcod.path_delete(my_path)
 
