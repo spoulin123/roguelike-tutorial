@@ -86,7 +86,7 @@ def main():
             if not game_map.is_blocked(destination_x, destination_y):
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
                 if target:
-                    print("You attack the " + target.name)
+                    player.fighter.attack(target)
                 else:
                     player.move(dx, dy)
                     fov_recompute = True
