@@ -13,8 +13,13 @@ def main():
     #sets varaibles for screen width and height (used later on)
     screen_width = 80
     screen_height = 50
+
+    bar_width = 20
+    panel_height = 7
+    panel_y = screen_height - panel_height
+
     map_width = 80
-    map_height = 45
+    map_height = 43
 
     room_max_size = 10
     room_min_size = 6
@@ -46,6 +51,7 @@ def main():
     libtcod.console_init_root(screen_width, screen_height, "Tutorial", False)
 
     con = libtcod.console_new(screen_width, screen_height)
+    panel = libtcod.console_new(screen_width, panel_height)
 
     game_map = GameMap(map_width, map_height)
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room)
