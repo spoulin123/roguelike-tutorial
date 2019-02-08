@@ -48,11 +48,7 @@ def main():
     }
 
     fighter_component = Fighter(hp = 30, defense = 2, power = 5)
-<<<<<<< HEAD
     player = Entity(0, 0, '@', libtcod.white, 'Player', blocks = True, render_order = RenderOrder.ACTOR, fighter = fighter_component)
-=======
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component)
->>>>>>> 48b37d5c8d3127832a34e74824fcd0d1bba080eb
     entities = [player]
 
     #sets the font of the console to arial10x10.png

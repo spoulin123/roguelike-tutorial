@@ -2,11 +2,7 @@ import tcod as libtcod
 
 from render_functions import RenderOrder
 from game_states import GameStates
-<<<<<<< HEAD
-from render_functions import RenderOrder
-=======
 from game_messages import Message
->>>>>>> 48b37d5c8d3127832a34e74824fcd0d1bba080eb
 
 def kill_player(player):
     player.char = '%'
