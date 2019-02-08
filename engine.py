@@ -18,6 +18,8 @@ def main():
     panel_height = 7
     panel_y = screen_height - panel_height
 
+
+
     map_width = 80
     map_height = 43
 
@@ -50,7 +52,7 @@ def main():
     #and the title of "Tutorial"
     libtcod.console_init_root(screen_width, screen_height, "Tutorial", False)
 
-    con = libtcod.console_new(screen_width, screen_height)
+    con = libtcod.console_new(screen_width, screen_height - panel_height)
     panel = libtcod.console_new(screen_width, panel_height)
 
     game_map = GameMap(map_width, map_height)
@@ -73,7 +75,7 @@ def main():
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithim)
 
-        render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
+        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, bar_width, panel_height, panel_y, colors)
 
         libtcod.console_flush()
 
