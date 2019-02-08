@@ -1,16 +1,21 @@
 import tcod as libtcod
 
-from game_states import GameStates
 from render_functions import RenderOrder
+from game_states import GameStates
+<<<<<<< HEAD
+from render_functions import RenderOrder
+=======
+from game_messages import Message
+>>>>>>> 48b37d5c8d3127832a34e74824fcd0d1bba080eb
 
 def kill_player(player):
     player.char = '%'
     player.color = libtcod.dark_red
 
-    return 'You died!', GameStates.PLAYER_DEAD
+    return Message('You died!', libtcod.red), GameStates.PLAYER_DEAD
 
 def kill_monster(monster):
-    death_message = '{0} is dead!'.format(monster.name.capitalize())
+    death_message = Message('{0} is dead!'.format(monster.name.capitalize()), libtcod.orange)
 
     monster.char = '%'
     monster.color = libtcod.dark_red

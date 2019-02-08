@@ -1,11 +1,16 @@
 import tcod as libtcod
 import math
+from render_functions import RenderOrder
 
 from render_functions import RenderOrder
 
 class Entity:
 
+<<<<<<< HEAD
     def __init__ (self, x, y, char, color, name, blocks = False, render_order=RenderOrder.CORPSE, fighter = None, ai = None):
+=======
+    def __init__ (self, x, y, char, color, name, blocks = False, render_order = RenderOrder.CORPSE, fighter = None, ai = None):
+>>>>>>> 48b37d5c8d3127832a34e74824fcd0d1bba080eb
         self.x = x
         self.y = y
         self.char = char
