@@ -1,3 +1,7 @@
+#TO DO (beyond the scope of the tutorial):
+# 1. Implement "look" action without mouse controls
+# 2. Implement ranged combat without mouse controls
+
 import tcod as libtcod
 
 from entity import Entity, get_blocking_entities_at_location
