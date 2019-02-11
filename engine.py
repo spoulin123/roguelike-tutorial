@@ -12,7 +12,7 @@ from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
 from components.fighter import Fighter
 from death_functions import kill_player, kill_monster
-from game_messages import MessageLog
+from game_messages import Message, MessageLog
 from components.inventory import Inventory
 
 def main():
@@ -98,6 +98,7 @@ def main():
         move = action.get('move')
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
+        pickup = action.get('pickup')
 
         player_turn_results = []
 
@@ -117,6 +118,16 @@ def main():
 
             game_state = GameStates.ENEMY_TURN
 
+        elif pickup and game_state == GameStates.PLAYER_TURN:
+            for entity in entities:
+                if entity.item and entity.x == player.x and entity.y == player.y:
+                    pickup_results = player.inventory.add_item(entity)
+                    player_turn_results.extend(pickup_results)
+
+                    break
+            else:
+                message_log.add_message(Message('There is nothing here to pick up'), libtcod.yellow)
+
         if exit:
             return True
 
@@ -126,9 +137,11 @@ def main():
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
+            item_added = player_turn_result.get('item_added')
 
             if message:
                 message_log.add_message(message)
+
             if dead_entity:
                 if dead_entity == player:
                     message, game_state = kill_player(dead_entity)
@@ -136,6 +149,11 @@ def main():
                     message = kill_monster(dead_entity)
 
                 message_log.add_message(message)
+
+            if item_added:
+                entities.remove(item_added)
+
+                game_state = GameStates.ENEMY_TURN
 
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
@@ -161,6 +179,8 @@ def main():
                         break
             else:
                 game_state = GameStates.PLAYER_TURN
+
+
 
 
 if __name__ == '__main__':
