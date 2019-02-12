@@ -1,8 +1,8 @@
 #TO DO (beyond the scope of the tutorial):
 # 1. Implement "look" action without mouse controls
 # 2. Implement ranged combat without mouse controls
+import tcod
 
-import tcod as libtcod
 
 from entity import Entity, get_blocking_entities_at_location
 from input_handlers import handle_keys
@@ -43,27 +43,27 @@ def main():
     max_items_per_room = 2
 
     colors = {
-        'dark_wall': libtcod.Color(0, 0, 100),
-        'dark_ground': libtcod.Color(50, 50, 150),
-        'light_wall': libtcod.Color(130, 110, 50),
-        'light_ground': libtcod.Color(200, 180, 50)
+        'dark_wall': tcod.Color(0, 0, 100),
+        'dark_ground': tcod.Color(50, 50, 150),
+        'light_wall': tcod.Color(130, 110, 50),
+        'light_ground': tcod.Color(200, 180, 50)
     }
 
     fighter_component = Fighter(hp = 30, defense = 2, power = 5)
     inventory_component = Inventory(26)
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, inventory = inventory_component)
+    player = Entity(0, 0, '@', tcod.white, 'Player', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, inventory = inventory_component)
     entities = [player]
 
     #sets the font of the console to arial10x10.png
-    libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE
-        | libtcod.FONT_LAYOUT_TCOD)
+    tcod.console_set_custom_font('arial10x10.png', tcod.FONT_TYPE_GREYSCALE
+        | tcod.FONT_LAYOUT_TCOD)
 
     #creates a non-fullscreen window with the width and height defined earlier
     #and the title of "Tutorial"
-    libtcod.console_init_root(screen_width, screen_height, "Tutorial", False)
+    tcod.console_init_root(screen_width, screen_height, "Tutorial", False)
 
-    con = libtcod.console_new(screen_width, screen_height - panel_height)
-    panel = libtcod.console_new(screen_width, panel_height)
+    con = tcod.console_new(screen_width, screen_height - panel_height)
+    panel = tcod.console_new(screen_width, panel_height)
 
     game_map = GameMap(map_width, map_height)
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room)
@@ -74,22 +74,22 @@ def main():
 
     message_log = MessageLog(message_x, message_width, message_height)
 
-    key = libtcod.Key()
-    mouse = libtcod.Mouse()
+    key = tcod.Key()
+    mouse = tcod.Mouse()
 
     game_state = GameStates.PLAYER_TURN
 
     #main game loop
-    while not libtcod.console_is_window_closed():
+    while not tcod.console_is_window_closed():
         #updates the key and mouse variables with any key or mouse events
-        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
+        tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)
 
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithim)
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors)
 
-        libtcod.console_flush()
+        tcod.console_flush()
 
         clear_all(con, entities)
 
@@ -126,13 +126,13 @@ def main():
 
                     break
             else:
-                message_log.add_message(Message('There is nothing here to pick up'), libtcod.yellow)
+                message_log.add_message(Message('There is nothing here to pick up'), tcod.yellow)
 
         if exit:
             return True
 
         if fullscreen:
-            libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
+            tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
 
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')

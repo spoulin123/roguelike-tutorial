@@ -1,4 +1,4 @@
-import tcod as libtcod
+import tcod
 import math
 from render_functions import RenderOrder
 
@@ -46,35 +46,35 @@ class Entity:
 
     def move_astar(self, target, entities, game_map):
         #Create an FOV map with the dimensions of the map
-        fov = libtcod.map_new(game_map.width, game_map.height)
+        fov = tcod.map_new(game_map.width, game_map.height)
 
         #Scan the map each turn and set all the walls as unwalkable
         for y1 in range(game_map.height):
             for x1 in range(game_map.width):
-                libtcod.map_set_properties(fov, x1, y1, not game_map.tiles[x1][y1].block_sight, not game_map.tiles[x1][y1].blocked)
+                tcod.map_set_properties(fov, x1, y1, not game_map.tiles[x1][y1].block_sight, not game_map.tiles[x1][y1].blocked)
 
         #Scan all objects to see if there are objects that must be navigated around (generally enemies)
         #Checks if each object isn't self or target (so the start and end points are not marked as unwalkable)
         for entity in entities:
             if entity.blocks and entity != self and entity != target:
-                libtcod.map_set_properties(fov, entity.x, entity.y, True, False)
+                tcod.map_set_properties(fov, entity.x, entity.y, True, False)
 
         #Allocate the A* path
         #1.41 is the rough cost of diagonal movement (sqrt 2)
-        my_path = libtcod.path_new_using_map(fov, 1.41)
+        my_path = tcod.path_new_using_map(fov, 1.41)
 
         #
-        libtcod.path_compute(my_path, self.x, self.y, target.x, target.y)
+        tcod.path_compute(my_path, self.x, self.y, target.x, target.y)
 
-        if not libtcod.path_is_empty(my_path) and libtcod.path_size(my_path) < 25:
-            x, y = libtcod.path_walk(my_path, True)
+        if not tcod.path_is_empty(my_path) and tcod.path_size(my_path) < 25:
+            x, y = tcod.path_walk(my_path, True)
             if x or y:
                 self.x = x
                 self.y = y
         else:
             self.move_towards(target.x, target.y, game_map, entities)
 
-        libtcod.path_delete(my_path)
+        tcod.path_delete(my_path)
 
     def distance_to(self, other):
         dx = other.x - self.x
