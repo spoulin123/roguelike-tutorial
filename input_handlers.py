@@ -24,6 +24,10 @@ def handle_keys(key):
     if key_char == 'g':
         return {'pickup' : True}
 
+    #open inventory
+    if key_char == 'i':
+        return {'show_inventory': True}
+
     #toggle fullscreen
     if key.vk == tcod.KEY_ENTER and key.lalt:
         return {'fullscreen' : True}

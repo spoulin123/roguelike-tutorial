@@ -78,6 +78,7 @@ def main():
     mouse = tcod.Mouse()
 
     game_state = GameStates.PLAYER_TURN
+    previous_game_state = game_state
 
     #main game loop
     while not tcod.console_is_window_closed():
@@ -87,7 +88,7 @@ def main():
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithim)
 
-        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors)
+        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors, game_state)
 
         tcod.console_flush()
 
@@ -99,6 +100,7 @@ def main():
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
         pickup = action.get('pickup')
+        show_inventory = action.get('show_inventory')
 
         player_turn_results = []
 
@@ -128,8 +130,15 @@ def main():
             else:
                 message_log.add_message(Message('There is nothing here to pick up'), tcod.yellow)
 
+        if show_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.SHOW_INVENTORY
+
         if exit:
-            return True
+            if game_state == GameStates.SHOW_INVENTORY:
+                game_state = previous_game_state
+            else:
+                return True
 
         if fullscreen:
             tcod.console_set_fullscreen(not tcod.console_is_fullscreen())

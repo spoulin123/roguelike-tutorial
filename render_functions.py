@@ -1,5 +1,7 @@
 import tcod
 from enum import Enum
+from game_states import GameStates
+from menus import inventory_menu
 
 class RenderOrder(Enum):
     CORPSE = 1
@@ -20,7 +22,7 @@ def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_c
     tcod.console_print_ex(panel, int(x + total_width/2), y, tcod.BKGND_NONE, tcod.CENTER, "{0}: {1}/{2}".format(name, value, maximum))
 
 
-def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors):
+def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors, game_state):
     if fov_recompute:
         for y in range(game_map.height):
             for x in range(game_map.width):
@@ -45,6 +47,8 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     for entity in entities_in_render_order:
         draw_entity(con, entity, fov_map)
 
+    tcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
+
     tcod.console_set_default_background(panel, tcod.black)
     tcod.console_clear(panel)
 
@@ -57,7 +61,9 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
         y += 1
 
     tcod.console_blit(panel, 0, 0, screen_width, panel_height, 0, 0, panel_y)
-    tcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
+
+    if game_state == GameStates.SHOW_INVENTORY:
+        inventory_menu(con, 'Press the key next to an item to use it, or use Esc to cancel.\n', player.inventory, 50, screen_width, screen_height)
 
 def clear_all(con, entities):
     for entity in entities:
