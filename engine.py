@@ -128,7 +128,7 @@ def main():
 
                     break
             else:
-                message_log.add_message(Message('There is nothing here to pick up'), tcod.yellow)
+                message_log.add_message(Message('There is nothing here to pick up', tcod.yellow))
 
         if show_inventory:
             previous_game_state = game_state
