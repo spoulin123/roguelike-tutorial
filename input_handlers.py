@@ -1,6 +1,18 @@
 import tcod
 
-def handle_keys(key):
+from game_states import GameStates
+
+def handle_keys(key, game_state):
+    if game_state == GameStates.PLAYER_TURN:
+        return handle_player_turn_keys(key)
+    elif game_state == GameStates.PLAYER_DEAD:
+        return handle_player_dead_keys(key)
+    elif game_state == GameStates.SHOW_INVENTORY:
+        return handle_inventory_keys(key)
+
+    return {}
+
+def handle_player_turn_keys(key):
     key_char = chr(key.c)
     #movement keys
     if key.vk == tcod.KEY_KP8:
@@ -29,6 +41,36 @@ def handle_keys(key):
         return {'show_inventory': True}
 
     #toggle fullscreen
+    if key.vk == tcod.KEY_ENTER and key.lalt:
+        return {'fullscreen' : True}
+
+    if key.vk == tcod.KEY_ESCAPE:
+        return {'exit' : True}
+
+    return {}
+
+def handle_player_dead_keys(key):
+    key_char = chr(key.c)
+
+    #open inventory
+    if key_char == 'i':
+        return {'show_inventory': True}
+
+    #toggle fullscreen
+    if key.vk == tcod.KEY_ENTER and key.lalt:
+        return {'fullscreen' : True}
+
+    if key.vk == tcod.KEY_ESCAPE:
+        return {'exit' : True}
+
+    return {}
+
+def handle_inventory_keys(key):
+    index = key.c - ord('a')
+
+    if index >= 0:
+        return {'inventory_index': index}
+
     if key.vk == tcod.KEY_ENTER and key.lalt:
         return {'fullscreen' : True}
 
