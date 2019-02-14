@@ -41,6 +41,10 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
                         tcod.console_set_char_background(con, x, y, colors.get('dark_wall'), tcod.BKGND_SET)
                     else:
                         tcod.console_set_char_background(con, x, y, colors.get('dark_ground'), tcod.BKGND_SET)
+                elif game_state != GameStates.SHOW_INVENTORY:
+                    tcod.console_set_char_background(con, x, y, colors.get('black'), tcod.BKGND_SET)
+                    tcod.console_put_char(con, x, y, ' ', tcod.BKGND_NONE)
+
 
     entities_in_render_order = sorted(entities, key = lambda x: x.render_order.value)
 
