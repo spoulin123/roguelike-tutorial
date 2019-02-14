@@ -1,30 +1,38 @@
-import tcod as libtcod
+import tcod
 
 def handle_keys(key):
     key_char = chr(key.c)
     #movement keys
-    if key.vk == libtcod.KEY_KP8:
+    if key.vk == tcod.KEY_KP8:
         return {'move' : (0, -1)}
-    elif key.vk == libtcod.KEY_KP9:
+    elif key.vk == tcod.KEY_KP9:
         return {'move' : (1, -1)}
-    elif key.vk == libtcod.KEY_KP6:
+    elif key.vk == tcod.KEY_KP6:
         return {'move' : (1, 0)}
-    elif key.vk == libtcod.KEY_KP3:
+    elif key.vk == tcod.KEY_KP3:
         return {'move' : (1, 1)}
-    elif key.vk == libtcod.KEY_KP2:
+    elif key.vk == tcod.KEY_KP2:
         return {'move' : (0, 1)}
-    elif key.vk == libtcod.KEY_KP1:
+    elif key.vk == tcod.KEY_KP1:
         return {'move' : (-1, 1)}
-    elif key.vk == libtcod.KEY_KP4:
+    elif key.vk == tcod.KEY_KP4:
         return {'move' : (-1, 0)}
-    elif key.vk == libtcod.KEY_KP7:
+    elif key.vk == tcod.KEY_KP7:
         return {'move' : (-1, -1)}
 
+    #pick up item
+    if key_char == 'g':
+        return {'pickup' : True}
+
+    #open inventory
+    if key_char == 'i':
+        return {'show_inventory': True}
+
     #toggle fullscreen
-    if key.vk == libtcod.KEY_ENTER and key.lalt:
+    if key.vk == tcod.KEY_ENTER and key.lalt:
         return {'fullscreen' : True}
 
-    if key.vk == libtcod.KEY_ESCAPE:
+    if key.vk == tcod.KEY_ESCAPE:
         return {'exit' : True}
 
     return {}
