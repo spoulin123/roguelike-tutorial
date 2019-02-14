@@ -52,13 +52,13 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     tcod.console_set_default_background(panel, tcod.black)
     tcod.console_clear(panel)
 
-    render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp, tcod.light_red, tcod.darker_red)
-
     y = 1
     for message in message_log.messages:
         tcod.console_set_default_foreground(panel, message.color)
         tcod.console_print_ex(panel, message_log.x, y, tcod.BKGND_NONE, tcod.LEFT, message.text)
         y += 1
+
+    render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp, tcod.light_red, tcod.darker_red)
 
     tcod.console_blit(panel, 0, 0, screen_width, panel_height, 0, 0, panel_y)
 
