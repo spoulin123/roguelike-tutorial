@@ -9,6 +9,10 @@ def handle_keys(key, game_state):
         return handle_player_dead_keys(key)
     elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         return handle_inventory_keys(key)
+    elif game_state == GameStates.TARGETING:
+        return handle_targeting_keys(key)
+    elif game_state == GameStates.LOOKING:
+        return handle_looking_keys(key)
 
     return {}
 
@@ -43,6 +47,10 @@ def handle_player_turn_keys(key):
     #drop item from inventory
     if key_char == 'd':
         return {'drop_inventory': True}
+
+    #look
+    if key_char == 'l':
+        return {'look': True}
 
     #toggle fullscreen
     if key.vk == tcod.KEY_ENTER and key.lalt:
@@ -82,3 +90,52 @@ def handle_inventory_keys(key):
         return {'exit' : True}
 
     return {}
+
+def handle_targeting_keys(key):
+    if key.vk == tcod.KEY_KP8:
+        return {'move_target' : (0, -1)}
+    elif key.vk == tcod.KEY_KP9:
+        return {'move_target' : (1, -1)}
+    elif key.vk == tcod.KEY_KP6:
+        return {'move_target' : (1, 0)}
+    elif key.vk == tcod.KEY_KP3:
+        return {'move_target' : (1, 1)}
+    elif key.vk == tcod.KEY_KP2:
+        return {'move_target' : (0, 1)}
+    elif key.vk == tcod.KEY_KP1:
+        return {'move_target' : (-1, 1)}
+    elif key.vk == tcod.KEY_KP4:
+        return {'move_target' : (-1, 0)}
+    elif key.vk == tcod.KEY_KP7:
+        return {'move_target' : (-1, -1)}
+
+    if key.vk == tcod.KEY_ENTER:
+        return {'target_selected': True}
+
+    if key.vk == tcod.KEY_ESCAPE:
+        return {'exit' : True}
+
+    return {}
+
+def handle_looking_keys(key):
+    if key.vk == tcod.KEY_KP8:
+        return {'move_target' : (0, -1)}
+    elif key.vk == tcod.KEY_KP9:
+        return {'move_target' : (1, -1)}
+    elif key.vk == tcod.KEY_KP6:
+        return {'move_target' : (1, 0)}
+    elif key.vk == tcod.KEY_KP3:
+        return {'move_target' : (1, 1)}
+    elif key.vk == tcod.KEY_KP2:
+        return {'move_target' : (0, 1)}
+    elif key.vk == tcod.KEY_KP1:
+        return {'move_target' : (-1, 1)}
+    elif key.vk == tcod.KEY_KP4:
+        return {'move_target' : (-1, 0)}
+    elif key.vk == tcod.KEY_KP7:
+        return {'move_target' : (-1, -1)}
+
+    if key.vk == tcod.KEY_ESCAPE:
+        return {'exit' : True}
+
+    return{}

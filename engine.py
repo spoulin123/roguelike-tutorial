@@ -2,6 +2,7 @@
 # 1. Implement "look" action without mouse controls
 # 2. Implement ranged combat without mouse controls
     #(should be able to change targeting game state to accomplish this easily)
+# 3. Make lighting not target corpses
 import tcod
 
 
@@ -15,6 +16,7 @@ from components.fighter import Fighter
 from death_functions import kill_player, kill_monster
 from game_messages import Message, MessageLog
 from components.inventory import Inventory
+from target import Target
 
 def main():
     #sets varaibles for screen width and height (used later on)
@@ -48,7 +50,8 @@ def main():
         'dark_ground': tcod.Color(50, 50, 150),
         'light_wall': tcod.Color(130, 110, 50),
         'light_ground': tcod.Color(200, 180, 50),
-        'black' :tcod.Color(0, 0, 0)
+        'black' :tcod.Color(0, 0, 0),
+        'white' :tcod.Color(255, 255, 255)
     }
 
     fighter_component = Fighter(hp = 30, defense = 2, power = 5)
@@ -82,6 +85,8 @@ def main():
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
 
+    player_target = Target(0,0)
+
     #main game loop
     while not tcod.console_is_window_closed():
         #updates the key and mouse variables with any key or mouse events
@@ -90,7 +95,9 @@ def main():
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithim)
 
-        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, colors, game_state)
+        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute,
+            message_log, screen_width, screen_height, bar_width, panel_height,
+            panel_y, colors, game_state, player_target)
 
         tcod.console_flush()
 
@@ -105,6 +112,8 @@ def main():
         show_inventory = action.get('show_inventory')
         inventory_index = action.get('inventory_index')
         drop_inventory = action.get('drop_inventory')
+        look = action.get('look')
+        move_target = action.get('move_target')
 
 
         player_turn_results = []
@@ -143,15 +152,20 @@ def main():
             previous_game_state = game_state
             game_state = GameStates.DROP_INVENTORY
 
+        if look:
+            previous_game_state = game_state
+            player_target.set(player.x, player.y)
+            game_state = GameStates.LOOKING
+
         if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(player.inventory.items):
             item = player.inventory.items[inventory_index]
             if game_state == GameStates.SHOW_INVENTORY:
-                player_turn_results.extend(player.inventory.use(item))
+                player_turn_results.extend(player.inventory.use(item, entities = entities, fov_map = fov_map))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item))
 
         if exit:
-            if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+            if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, GameStates.LOOKING):
                 game_state = previous_game_state
             else:
                 return True
@@ -165,6 +179,7 @@ def main():
             item_added = player_turn_result.get('item_added')
             item_consumed = player_turn_result.get('consumed')
             item_dropped = player_turn_result.get('item_dropped')
+            targeting = player_turn_result.get('targeting')
 
             if message:
                 message_log.add_message(message)
@@ -215,7 +230,9 @@ def main():
             else:
                 game_state = GameStates.PLAYER_TURN
 
-
+        if game_state == GameStates.LOOKING and move_target:
+            dx, dy = move_target
+            player_target.move(dx, dy)
 
 
 if __name__ == '__main__':
