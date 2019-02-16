@@ -1,8 +1,8 @@
 #TO DO (beyond the scope of the tutorial):
-# 1. Implement "look" action without mouse controls
+# (DONE) 1. Implement "look" action without mouse controls
 # 2. Implement ranged combat without mouse controls
     #(should be able to change targeting game state to accomplish this easily)
-# 3. Make lighting not target corpses
+# (DONE) 3. Make lightning not target corpses
 import tcod
 
 

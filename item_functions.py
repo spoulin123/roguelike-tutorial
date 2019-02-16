@@ -29,7 +29,7 @@ def cast_lightning(*args, **kwargs):
     closest_distance = maximum_range + 1
 
     for entity in entities:
-        if entity.fighter and entity != caster and tcod.map_is_in_fov(fov_map, entity.x, entity.y):
+        if entity.fighter and entity != caster and entity.fighter.hp > 0 and tcod.map_is_in_fov(fov_map, entity.x, entity.y):
             distance = caster.distance_to(entity)
 
             if distance < closest_distance:
@@ -37,9 +37,9 @@ def cast_lightning(*args, **kwargs):
                 closest_distance = distance
 
     if target:
-        results.append({'consumed': True, 'target': target, 'message': Message('A lighting bolt strikes the {0} with a loud thunder! The damage is {1}'.format(target.name, damage))})
+        results.append({'consumed': True, 'target': target, 'message': Message('A lighting bolt strikes the {0} with a loud thunder! The damage is {1}'.format(target.name, damage), tcod.yellow)})
         results.extend(target.fighter.take_damage(damage))
     else:
-        results.append({'consumed': False, 'target': None, 'message': Message('No enemy is close enough to strike.', libtcod.red)})
+        results.append({'consumed': False, 'target': None, 'message': Message('No enemy is close enough to strike.', tcod.red)})
 
     return results
