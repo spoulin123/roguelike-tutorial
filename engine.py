@@ -168,13 +168,24 @@ def main():
         if exit:
             if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, GameStates.LOOKING):
                 game_state = previous_game_state
-            else if game_state == GameStates.TARGETING:
+            elif game_state == GameStates.TARGETING:
                 player_turn_results.append({'targeting_cancelled': True})
             else:
                 return True
 
         if fullscreen:
             tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
+
+        if game_state == GameStates.TARGETING:
+            if move_target:
+                dx, dy = move_target
+                player_target.move(dx, dy)
+            if target_selected:
+                item_use_results = player.inventory.use(targeting_item,
+                    entities=entities, fov_map=fov_map, target_x=player_target.x,
+                        target_y=player_target.y)
+                player_turn_results.extend(item_use_results)
+
 
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
@@ -211,6 +222,7 @@ def main():
             if targeting:
                 previous_game_state = GameStates.PLAYER_TURN
                 game_state = GameStates.TARGETING
+                player_target.set(player.x, player.y)
 
                 targeting_item = targeting
 
@@ -248,16 +260,6 @@ def main():
         if game_state == GameStates.LOOKING and move_target:
             dx, dy = move_target
             player_target.move(dx, dy)
-
-        if game_state = GameStates.TARGETING:
-            if move_target:
-                dx, dy = move_target
-                player_target.move(dx, dy)
-            if target_selected:
-                item_use_results = player.inventory.use(targrting_item,
-                    entities=entities, fov_map=fov_map, target_x=target.x, target_y=target.y)
-                player_turn_results.extend(item_use_results)
-
 
 
 if __name__ == '__main__':
