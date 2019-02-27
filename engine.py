@@ -85,6 +85,7 @@ def main():
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
 
+    targeting_item = None
     player_target = Target(0,0)
 
     #main game loop
@@ -114,7 +115,7 @@ def main():
         drop_inventory = action.get('drop_inventory')
         look = action.get('look')
         move_target = action.get('move_target')
-
+        target_selected = action.get('target_selected')
 
         player_turn_results = []
 
@@ -167,6 +168,8 @@ def main():
         if exit:
             if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, GameStates.LOOKING):
                 game_state = previous_game_state
+            else if game_state == GameStates.TARGETING:
+                player_turn_results.append({'targeting_cancelled': True})
             else:
                 return True
 
@@ -180,9 +183,14 @@ def main():
             item_consumed = player_turn_result.get('consumed')
             item_dropped = player_turn_result.get('item_dropped')
             targeting = player_turn_result.get('targeting')
+            targeting_cancelled = player_turn_result.get('targeting_cancelled')
 
             if message:
                 message_log.add_message(message)
+
+            if targeting_cancelled:
+                game_state = previous_game_state
+                message_log.add_message(Message('Targeting cancelled'))
 
             if dead_entity:
                 if dead_entity == player:
@@ -200,9 +208,16 @@ def main():
             if item_consumed:
                 game_state = GameStates.ENEMY_TURN
 
+            if targeting:
+                previous_game_state = GameStates.PLAYER_TURN
+                game_state = GameStates.TARGETING
+
+                targeting_item = targeting
+
+                message_log.add_message(targeting_item.item.targeting_message)
+
             if item_dropped:
                 entities.append(item_dropped)
-
                 game_state = GameStates.ENEMY_TURN
 
         if game_state == GameStates.ENEMY_TURN:
@@ -233,6 +248,16 @@ def main():
         if game_state == GameStates.LOOKING and move_target:
             dx, dy = move_target
             player_target.move(dx, dy)
+
+        if game_state = GameStates.TARGETING:
+            if move_target:
+                dx, dy = move_target
+                player_target.move(dx, dy)
+            if target_selected:
+                item_use_results = player.inventory.use(targrting_item,
+                    entities=entities, fov_map=fov_map, target_x=target.x, target_y=target.y)
+                player_turn_results.extend(item_use_results)
+
 
 
 if __name__ == '__main__':
