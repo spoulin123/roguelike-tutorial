@@ -10,14 +10,17 @@ from components.item import Item
 from item_functions import heal, cast_lightning, cast_fireball
 from game_messages import Message
 
+#TO CHANGE TO NEW MAP GEN:
+# 1. line 23 initialize_tiles replace Tile(True) with Tile(False)
+# 2. initialize_new_game change max_rooms to a low number (3)
+
+
 class GameMap:
     def __init__(self, width, height):
         self.width = width
         self.height = height
         self.tiles = self.initialize_tiles()
 
-
-    #CHANGE BACK TO Tile(True)
     def initialize_tiles(self):
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
         return tiles
