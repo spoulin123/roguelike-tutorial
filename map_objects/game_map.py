@@ -19,7 +19,7 @@ class GameMap:
 
     #CHANGE BACK TO Tile(True)
     def initialize_tiles(self):
-        tiles = [[Tile(False) for y in range(self.height)] for x in range(self.width)]
+        tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
         return tiles
 
     def make_map2(self, max_buildings, building_min_size, building_max_size, map_width, map_height, player, entities, max_enemies, max_items_per_room):
@@ -109,7 +109,7 @@ class GameMap:
             else:
                 y = building.y2
             x = randint(building.x1 + 1, building.x2 - 1)
-            self.tiles[x][y].blocked == False
+            self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
         else:
             if randint(0, 1) == 0:
@@ -117,9 +117,8 @@ class GameMap:
             else:
                 x = building.x2
             y = randint(building.y1 + 1, building.y2 - 1)
-            self.tiles[x][y].blocked == False
+            self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
-
 
     def create_h_wall(self, x1, x2, y):
         for x in range(min(x1, x2), max(x1, x2) + 1):
