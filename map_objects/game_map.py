@@ -16,9 +16,34 @@ class GameMap:
         self.height = height
         self.tiles = self.initialize_tiles()
 
+
+    #CHANGE BACK TO Tile(True)
     def initialize_tiles(self):
-        tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
+        tiles = [[Tile(False) for y in range(self.height)] for x in range(self.width)]
         return tiles
+
+    def make_map2(self, max_buildings, building_min_size, building_max_size, map_width, map_height, player, entities, max_enemies, max_items_per_room):
+        buildings = []
+        num_buildings = 0
+        for r in range(max_buildings):
+            w = randint(building_min_size, building_max_size)
+            h = randint(building_min_size, building_max_size)
+            x = randint(0, map_width - w - 1)
+            y = randint(0, map_height - h - 1)
+
+            new_building = Rect(x, y, w, h)
+
+            for other_building in buildings:
+                if new_building.intersect(other_building):
+                    break
+            else:
+                self.create_building(new_building)
+
+                (new_x, new_y) = new_building.center()
+
+                if num_buildings == 0:
+                    player.x = new_x
+                    player.y = new_y
 
     def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room):
         rooms = []
@@ -72,6 +97,39 @@ class GameMap:
         for y in range(min(y1, y2), max(y1, y2) + 1):
             self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
+
+    def create_building(self, building):
+        self.create_v_wall(building.y1, building.y2, building.x1)
+        self.create_v_wall(building.y1, building.y2, building.x2)
+        self.create_h_wall(building.x1, building.x2, building.y1)
+        self.create_h_wall(building.x1, building.x2, building.y2)
+        if randint(0, 1) == 0:
+            if randint(0, 1) == 0:
+                y = building.y1
+            else:
+                y = building.y2
+            x = randint(building.x1 + 1, building.x2 - 1)
+            self.tiles[x][y].blocked == False
+            self.tiles[x][y].block_sight = False
+        else:
+            if randint(0, 1) == 0:
+                x = building.x1
+            else:
+                x = building.x2
+            y = randint(building.y1 + 1, building.y2 - 1)
+            self.tiles[x][y].blocked == False
+            self.tiles[x][y].block_sight = False
+
+
+    def create_h_wall(self, x1, x2, y):
+        for x in range(min(x1, x2), max(x1, x2) + 1):
+            self.tiles[x][y].blocked = True
+            self.tiles[x][y].block_sight = True
+
+    def create_v_wall(self, y1, y2, x):
+        for y in range(min(y1, y2), max(y1, y2) + 1):
+            self.tiles[x][y].blocked = True
+            self.tiles[x][y].block_sight = True
 
     def place_entities(self, room, entities, max_monsters_per_room, max_items_per_room):
         number_of_monsters = randint(0, max_monsters_per_room)
