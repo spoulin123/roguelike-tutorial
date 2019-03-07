@@ -48,6 +48,16 @@ class GameMap:
 
                 buildings.append(new_building)
 
+        #ADD TO FUNCTION CALL LATER
+        max_trees = 30
+        for r in range(max_trees):
+            x = randint(0, map_width - 1)
+            y = randint(0, map_height - 1)
+            breakable_component = Breakable(hp = 20)
+            tree = Entity(x, y, '*', tcod.desaturated_green, 'Tree', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
+            entities.append(tree)
+
+
         fighter_component = Fighter(hp = 10, defense = 0, power = 3)
         ai_component = BasicMonster()
         monster = Entity(10, 10, 'o', tcod.desaturated_green, 'Orc', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component)
