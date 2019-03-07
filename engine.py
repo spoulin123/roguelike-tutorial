@@ -8,12 +8,12 @@
 
 import tcod
 
-from entity import get_blocking_entities_at_location
+from entity import get_blocking_entities_at_location, get_fighting_entities_at_location
 from input_handlers import handle_keys
 from render_functions import clear_all, render_all
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
-from death_functions import kill_player, kill_monster
+from death_functions import kill_player, kill_monster, destroy_object
 from game_messages import Message
 from target import Target
 from loader_functions.initialize_new_game import get_constants, get_game_variables
@@ -87,8 +87,12 @@ def main():
             if not game_map.is_blocked(destination_x, destination_y):
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
                 if target:
-                    attack_results = player.fighter.attack(target)
-                    player_turn_results.extend(attack_results)
+                    if target.fighter:
+                        attack_results = player.fighter.attack(target)
+                        player_turn_results.extend(attack_results)
+                    elif target.breakable:
+                        attack_results = player.fighter.attack(target)
+                        player_turn_results.extend(attack_results)
                 else:
                     player.move(dx, dy)
                     fov_recompute = True
@@ -150,6 +154,7 @@ def main():
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
+            destroyed_entity = player_turn_result.get('destroyed')
             item_added = player_turn_result.get('item_added')
             item_consumed = player_turn_result.get('consumed')
             item_dropped = player_turn_result.get('item_dropped')
@@ -169,6 +174,10 @@ def main():
                 else:
                     message = kill_monster(dead_entity)
 
+                message_log.add_message(message)
+
+            if destroyed_entity:
+                message = destroy_object(destroyed_entity)
                 message_log.add_message(message)
 
             if item_added:

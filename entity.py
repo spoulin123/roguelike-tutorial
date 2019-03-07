@@ -6,7 +6,7 @@ from render_functions import RenderOrder
 
 class Entity:
 
-    def __init__ (self, x, y, char, color, name, blocks = False, render_order = RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None):
+    def __init__ (self, x, y, char, color, name, blocks = False, render_order = RenderOrder.CORPSE, fighter=None, breakable=None, ai=None, item=None, inventory=None):
         self.x = x
         self.y = y
         self.char = char
@@ -15,6 +15,7 @@ class Entity:
         self.blocks = blocks
         self.render_order = render_order
         self.fighter = fighter
+        self.breakable = breakable
         self.ai = ai
         self.item = item
         self.inventory = inventory
@@ -30,6 +31,9 @@ class Entity:
 
         if self.inventory:
             self.inventory.owner = self
+
+        if self.breakable:
+            self.breakable.owner = self
 
     def move(self, dx, dy):
         self.x += dx
@@ -89,6 +93,13 @@ class Entity:
 def get_blocking_entities_at_location(entities, destination_x, destination_y):
     for entity in entities:
         if entity.blocks and entity.x == destination_x and entity.y == destination_y:
+            return entity
+
+    return None
+
+def get_fighting_entities_at_location(entities, destination_x, destination_y):
+    for entity in entities:
+        if entity.fighter and entity.x == destination_x and entity.y == destination_y:
             return entity
 
     return None
