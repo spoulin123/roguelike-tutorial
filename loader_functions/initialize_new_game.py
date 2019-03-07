@@ -27,7 +27,9 @@ def get_constants():
 
     room_max_size = 10
     room_min_size = 6
-    max_rooms = 30
+    #make_map(): 30
+    #make_map2(): 3
+    max_rooms = 3
 
     fov_algorithim = 0
     fov_light_walls = True

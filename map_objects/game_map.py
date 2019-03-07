@@ -5,6 +5,7 @@ from map_objects.rectangle import Rect
 from random import randint
 from components.ai import BasicMonster
 from components.fighter import Fighter
+from components.breakable import Breakable
 from render_functions import RenderOrder
 from components.item import Item
 from item_functions import heal, cast_lightning, cast_fireball
@@ -16,8 +17,8 @@ class GameMap:
         self.height = height
         self.tiles = self.initialize_tiles()
 
-
-    #CHANGE BACK TO Tile(True)
+    #make_map(): Tile(True)
+    #make_map2(): Tile(False)
     def initialize_tiles(self):
         tiles = [[Tile(False) for y in range(self.height)] for x in range(self.width)]
         return tiles
@@ -44,6 +45,17 @@ class GameMap:
                 if num_buildings == 0:
                     player.x = new_x
                     player.y = new_y
+
+                buildings.append(new_building)
+
+        fighter_component = Fighter(hp = 10, defense = 0, power = 3)
+        ai_component = BasicMonster()
+        monster = Entity(10, 10, 'o', tcod.desaturated_green, 'Orc', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component)
+        entities.append(monster)
+
+        breakable_component = Breakable(hp = 20)
+        crate = Entity(20, 20, '*', tcod.dark_sepia, 'Crate', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
+        entities.append(crate)
 
     def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room):
         rooms = []
@@ -109,7 +121,7 @@ class GameMap:
             else:
                 y = building.y2
             x = randint(building.x1 + 1, building.x2 - 1)
-            self.tiles[x][y].blocked == False
+            self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
         else:
             if randint(0, 1) == 0:
@@ -117,7 +129,7 @@ class GameMap:
             else:
                 x = building.x2
             y = randint(building.y1 + 1, building.y2 - 1)
-            self.tiles[x][y].blocked == False
+            self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
 
 
