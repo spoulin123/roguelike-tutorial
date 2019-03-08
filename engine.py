@@ -53,7 +53,7 @@ def main():
         tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)
 
         if fov_recompute:
-            recompute_fov(fov_map, player.x, player.y, constants['fov_radius'],
+            recompute_fov(fov_map, player, constants['fov_radius'], entities,
                 constants['fov_light_walls'], constants['fov_algorithm'])
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute,

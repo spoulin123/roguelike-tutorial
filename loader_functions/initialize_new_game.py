@@ -33,7 +33,7 @@ def get_constants():
 
     fov_algorithim = 0
     fov_light_walls = True
-    fov_radius = 10
+    fov_radius = 0
 
     max_monsters_per_room = 3
     max_items_per_room = 2
@@ -79,7 +79,7 @@ def get_game_variables(constants):
     entities = [player]
 
     game_map = GameMap(constants['map_width'], constants['map_height'])
-    game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+    game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
         constants['map_width'], constants['map_height'], player, entities,
         constants['max_monsters_per_room'], constants['max_items_per_room'])
 

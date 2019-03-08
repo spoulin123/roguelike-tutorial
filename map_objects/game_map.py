@@ -20,7 +20,7 @@ class GameMap:
     #make_map(): Tile(True)
     #make_map2(): Tile(False)
     def initialize_tiles(self):
-        tiles = [[Tile(False) for y in range(self.height)] for x in range(self.width)]
+        tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
         return tiles
 
     def make_map2(self, max_buildings, building_min_size, building_max_size, map_width, map_height, player, entities, max_enemies, max_items_per_room):
