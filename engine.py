@@ -6,6 +6,11 @@
 # 4. Show fireball radius during targeting
 # 5. Get tech department to install shelve2
 
+#Current state of world map:
+# -Only moving off right side is currently implemented
+# -Player is placed at a location defined by the game map
+# -Entities are not deleted. They cant simply be deleted because the player must be able to return to maps
+
 import tcod
 
 from entity import get_blocking_entities_at_location, get_fighting_entities_at_location
@@ -17,6 +22,8 @@ from death_functions import kill_player, kill_monster, destroy_object
 from game_messages import Message
 from target import Target
 from loader_functions.initialize_new_game import get_constants, get_game_variables
+from map_objects.world_map import WorldMap
+from map_objects.game_map import GameMap
 
 def main():
     constants = get_constants()
@@ -33,11 +40,13 @@ def main():
     con = tcod.console_new(constants['screen_width'], constants['screen_height'])
     panel = tcod.console_new(constants['screen_width'], constants['panel_height'])
 
-    player, entities, game_map, message_log, game_state = get_game_variables(constants)
+    player, entities, world_map, message_log, game_state = get_game_variables(constants)
+
+    current_map = world_map.maps[world_map.x][world_map.y]
 
     fov_recompute = True
 
-    fov_map = initialize_fov(game_map)
+    fov_map = initialize_fov(current_map)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
@@ -53,10 +62,11 @@ def main():
         tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)
 
         if fov_recompute:
+            fov_map = initialize_fov(current_map)
             recompute_fov(fov_map, player, constants['fov_radius'], entities,
                 constants['fov_light_walls'], constants['fov_algorithm'])
 
-        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute,
+        render_all(con, panel, entities, player, current_map, fov_map, fov_recompute,
             message_log,  constants['screen_width'], constants['screen_height'], constants['bar_width'],
             constants['panel_height'], constants['panel_y'], constants['colors'], game_state, player_target)
 
@@ -84,7 +94,16 @@ def main():
             destination_x = player.x + dx
             destination_y = player.y + dy
 
-            if not game_map.is_blocked(destination_x, destination_y):
+            if destination_x == current_map.width:
+                game_map = GameMap(constants['map_width'], constants['map_height'])
+                game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                    constants['map_width'], constants['map_height'], player, entities,
+                    constants['max_monsters_per_room'], constants['max_items_per_room'])
+                world_map.move_to(world_map.x+1, world_map.y, game_map)
+                current_map = world_map.maps[world_map.x][world_map.y]
+                destination_x = 0
+
+            if not current_map.is_blocked(destination_x, destination_y):
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
                 if target:
                     if target.fighter:
@@ -204,7 +223,7 @@ def main():
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
                 if entity.ai:
-                    enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
+                    enemy_turn_results = entity.ai.take_turn(player, fov_map, current_map, entities)
 
                     for enemy_turn_result in enemy_turn_results:
                         message = enemy_turn_result.get('message')
