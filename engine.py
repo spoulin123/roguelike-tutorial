@@ -10,6 +10,7 @@
 # -Only moving off right side is currently implemented
 # -Player is placed at a location defined by the game map
 # -Entities are not deleted. They cant simply be deleted because the player must be able to return to maps
+#   -Each GameMap needs a list of entities for itself
 
 import tcod
 
@@ -89,12 +90,14 @@ def main():
 
         player_turn_results = []
 
+        #Current error: x and y are being set to default make_map values in opposute moves
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
             destination_x = player.x + dx
             destination_y = player.y + dy
 
             if destination_x == current_map.width:
+                entities = [player]
                 game_map = GameMap(constants['map_width'], constants['map_height'])
                 game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
                     constants['map_width'], constants['map_height'], player, entities,
@@ -102,6 +105,19 @@ def main():
                 world_map.move_to(world_map.x+1, world_map.y, game_map)
                 current_map = world_map.maps[world_map.x][world_map.y]
                 destination_x = 0
+                dx = 0
+                player.x = 0
+            elif destination_y == current_map.height:
+                entities = [player]
+                game_map = GameMap(constants['map_width'], constants['map_height'])
+                game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                    constants['map_width'], constants['map_height'], player, entities,
+                    constants['max_monsters_per_room'], constants['max_items_per_room'])
+                world_map.move_to(world_map.x, world_map.y-1, game_map)
+                current_map = world_map.maps[world_map.x][world_map.y]
+                destination_y = 0
+                dy = 0
+                player.y = 0
 
             if not current_map.is_blocked(destination_x, destination_y):
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
