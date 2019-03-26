@@ -90,7 +90,9 @@ def main():
 
         player_turn_results = []
 
-        #Current error: x and y are being set to default make_map values in opposute moves
+        #Current errors:
+        # (FIXED) x and y are being set to default make_map values in opposite moves
+        # diagonal moves off the edge of the map cause a crash
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
             destination_x = player.x + dx
@@ -108,6 +110,7 @@ def main():
                 dx = 0
                 player.x = 0
                 player.y = destination_y
+                print(str(world_map.x)+" ,"+str(world_map.y))
             elif destination_y == current_map.height:
                 entities = [player]
                 game_map = GameMap(constants['map_width'], constants['map_height'])
@@ -120,6 +123,33 @@ def main():
                 dy = 0
                 player.y = 0
                 player.x = destination_x
+                print(str(world_map.x)+" ,"+str(world_map.y))
+            elif destination_x == -1:
+                entities = [player]
+                game_map = GameMap(constants['map_width'], constants['map_height'])
+                game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                    constants['map_width'], constants['map_height'], player, entities,
+                    constants['max_monsters_per_room'], constants['max_items_per_room'])
+                world_map.move_to(world_map.x-1, world_map.y, game_map)
+                current_map = world_map.maps[world_map.x][world_map.y]
+                destination_x = current_map.width-1
+                dx = 0
+                player.x = current_map.width-1
+                player.y = destination_y
+                print(str(world_map.x)+" ,"+str(world_map.y))
+            elif destination_y == -1:
+                entities = [player]
+                game_map = GameMap(constants['map_width'], constants['map_height'])
+                game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                    constants['map_width'], constants['map_height'], player, entities,
+                    constants['max_monsters_per_room'], constants['max_items_per_room'])
+                world_map.move_to(world_map.x, world_map.y+1, game_map)
+                current_map = world_map.maps[world_map.x][world_map.y]
+                destination_y = current_map.height-1
+                dy = 0
+                player.y = current_map.height-1
+                player.x = destination_x
+                print(str(world_map.x)+" ,"+str(world_map.y))
 
             if not current_map.is_blocked(destination_x, destination_y):
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
