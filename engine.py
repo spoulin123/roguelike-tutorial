@@ -107,6 +107,7 @@ def main():
                 destination_x = 0
                 dx = 0
                 player.x = 0
+                player.y = destination_y
             elif destination_y == current_map.height:
                 entities = [player]
                 game_map = GameMap(constants['map_width'], constants['map_height'])
@@ -118,6 +119,7 @@ def main():
                 destination_y = 0
                 dy = 0
                 player.y = 0
+                player.x = destination_x
 
             if not current_map.is_blocked(destination_x, destination_y):
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
