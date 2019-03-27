@@ -26,18 +26,18 @@ def get_constants():
     map_width = 80
     map_height = 43
 
-    room_max_size = 10
-    room_min_size = 6
-    #make_map(): 30
-    #make_map2(): 3
-    max_rooms = 3
+    building_max_size = 10
+    building_min_size = 6
+    #make_map2(): 30
+    #make_map(): 3
+    max_buildings = 3
 
     fov_algorithim = 0
     fov_light_walls = True
-    fov_radius = 20
+    fov_radius = 0
 
     max_monsters_per_room = 3
-    max_items_per_room = 2
+    max_items_per_building = 2
 
     colors = {
         'dark_wall': tcod.Color(0, 0, 100),
@@ -60,14 +60,14 @@ def get_constants():
         'message_height': message_height,
         'map_width': map_width,
         'map_height': map_height,
-        'room_max_size': room_max_size,
-        'room_min_size': room_min_size,
-        'max_rooms': max_rooms,
+        'building_max_size': building_max_size,
+        'building_min_size': building_min_size,
+        'max_buildings': max_buildings,
         'fov_algorithm': fov_algorithim,
         'fov_light_walls': fov_light_walls,
         'fov_radius': fov_radius,
         'max_monsters_per_room': max_monsters_per_room,
-        'max_items_per_room': max_items_per_room,
+        'max_items_per_building': max_items_per_building,
         'colors': colors
     }
 
@@ -80,9 +80,9 @@ def get_game_variables(constants):
     entities = [player]
 
     game_map = GameMap(constants['map_width'], constants['map_height'])
-    game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+    game_map.make_map(constants['max_buildings'], constants['building_min_size'], constants['building_max_size'],
         constants['map_width'], constants['map_height'], player, entities,
-        constants['max_monsters_per_room'], constants['max_items_per_room'])
+        constants['max_monsters_per_room'], constants['max_items_per_building'])
 
     world_map = WorldMap(10, 10, 0, 0, game_map)
 

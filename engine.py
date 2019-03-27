@@ -102,9 +102,9 @@ def main():
                 if world_map.x < 9:
                     entities = [player]
                     game_map = GameMap(constants['map_width'], constants['map_height'])
-                    game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                    game_map.make_map(constants['max_rooms'], constants['building_min_size'], constants['building_max_size'],
                         constants['map_width'], constants['map_height'], player, entities,
-                        constants['max_monsters_per_room'], constants['max_items_per_room'])
+                        constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x+1, world_map.y, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
                     destination_x = 0
@@ -120,9 +120,9 @@ def main():
                 if world_map.y > 0:
                     entities = [player]
                     game_map = GameMap(constants['map_width'], constants['map_height'])
-                    game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                    game_map.make_map(constants['max_rooms'], constants['building_min_size'], constants['building_max_size'],
                         constants['map_width'], constants['map_height'], player, entities,
-                        constants['max_monsters_per_room'], constants['max_items_per_room'])
+                        constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x, world_map.y-1, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
                     destination_y = 0
@@ -138,9 +138,9 @@ def main():
                 if world_map.x > 0:
                     entities = [player]
                     game_map = GameMap(constants['map_width'], constants['map_height'])
-                    game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                    game_map.make_map(constants['max_rooms'], constants['building_min_size'], constants['building_max_size'],
                         constants['map_width'], constants['map_height'], player, entities,
-                        constants['max_monsters_per_room'], constants['max_items_per_room'])
+                        constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x-1, world_map.y, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
                     destination_x = current_map.width-1
@@ -156,9 +156,9 @@ def main():
                 if world_map.y < 9:
                     entities = [player]
                     game_map = GameMap(constants['map_width'], constants['map_height'])
-                    game_map.make_map2(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                    game_map.make_map(constants['max_rooms'], constants['building_min_size'], constants['building_max_size'],
                         constants['map_width'], constants['map_height'], player, entities,
-                        constants['max_monsters_per_room'], constants['max_items_per_room'])
+                        constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x, world_map.y+1, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
                     destination_y = current_map.height-1
