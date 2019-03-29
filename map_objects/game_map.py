@@ -101,8 +101,8 @@ class GameMap:
     # -add enemies
     # -add barriers, crates, items, etc.
     def set_up_outpost(self, entities, map_width, map_height, player, max_buildings, building_min_size, building_max_size):
-        zone_w = randint(int(map_width/2), int(map_width*2/3))
-        zone_h = randint(int(map_height/2), int(map_height*2/3))
+        zone_w = randint(int(map_width*2/3), int(map_width*3/4))
+        zone_h = randint(int(map_height*2/3), int(map_height*3/4))
         zone_x = randint(0, map_width - zone_w - 1)
         zone_y = randint(0, map_height - zone_h - 1)
         for x in range(zone_x, zone_x + zone_w):
@@ -132,6 +132,12 @@ class GameMap:
                 if num_buildings == 0:
                     player.x = new_x
                     player.y = new_y
+
+                for x in range(x, x+w):
+                    for y in range(y, y + h):
+                        for entity in entities:
+                            if not entity == player and entity.x == x and entity.y == y:
+                                entities.remove(entity)
 
                 buildings.append(new_building)
 

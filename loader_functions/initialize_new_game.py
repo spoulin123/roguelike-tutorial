@@ -26,11 +26,11 @@ def get_constants():
     map_width = 80
     map_height = 43
 
-    building_max_size = 10
+    building_max_size = 8
     building_min_size = 6
     #make_map2(): 30
     #make_map(): 3
-    max_buildings = 3
+    max_buildings = 5
 
     fov_algorithim = 0
     fov_light_walls = True

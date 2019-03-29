@@ -139,3 +139,15 @@ def handle_looking_keys(key):
         return {'exit' : True}
 
     return{}
+
+def handle_main_menu(key):
+    key_char = chr(key.c)
+
+    if key_char == 'n':
+        return {'new_game': True}
+    elif key_char == 'l':
+        return {'load_game': True}
+    elif key_char == 'e' or  key.vk == tcod.KEY_ESCAPE:
+        return {'exit': True}
+
+    return {}
