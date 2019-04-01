@@ -10,10 +10,10 @@ def save_game(player, entities, world_map, message_log, game_state):
         data_file['game_state'] = game_state
 
 def load_game():
-    if not os.path.isfile('save_game.dat'):
+    if not os.path.isfile('savegame.dat.db'):
         raise FileNotFoundError
 
-    with shelve.open('savegame.dat', 'r') as data_file:
+    with shelve.open('savegame.dat') as data_file:
         player_index = data_file['player_index']
         entities = data_file['entities']
         world_map = data_file['world_map']

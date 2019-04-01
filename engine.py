@@ -74,6 +74,8 @@ def main():
             load_saved_game = action.get('load_game')
             exit_game = action.get('exit_game')
 
+            #get better method for main menu item selection
+
             if show_load_error_message and (new_game or load_saved_game or exit_game):
                 show_load_error_message = False
             elif new_game:
@@ -276,6 +278,8 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
             elif game_state == GameStates.TARGETING:
                 player_turn_results.append({'targeting_cancelled': True})
             else:
+                save_game(player, entities, world_map, message_log, game_state)
+
                 return True
 
         if fullscreen:

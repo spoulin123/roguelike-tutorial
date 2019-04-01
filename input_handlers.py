@@ -148,6 +148,6 @@ def handle_main_menu(key):
     elif key_char == 'l':
         return {'load_game': True}
     elif key_char == 'e' or  key.vk == tcod.KEY_ESCAPE:
-        return {'exit': True}
+        return {'exit_game': True}
 
     return {}
