@@ -5,6 +5,7 @@
 # (DONE) 3. Make lightning not target corpses
 # 4. Show fireball radius during targeting
 # 5. Get tech department to install shelve2
+# 6. Add list of common items to quickly add in game
 
 #Current state of world map:
 # -Only moving off right side is currently implemented

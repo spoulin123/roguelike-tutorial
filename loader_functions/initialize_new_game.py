@@ -34,7 +34,7 @@ def get_constants():
 
     fov_algorithim = 0
     fov_light_walls = True
-    fov_radius = 0
+    fov_radius = 15
 
     max_monsters_per_room = 3
     max_items_per_building = 2

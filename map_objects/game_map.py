@@ -38,11 +38,12 @@ class GameMap:
 
         #self.set_up_wilderness(entities, map_width, map_height)
         self.set_up_outpost(entities, map_width, map_height, player, max_buildings, building_min_size, building_max_size)
+        self.set_up_wilderness(entities, map_width, map_height)
 
-        # fighter_component = Fighter(hp = 10, defense = 0, power = 3)
-        # ai_component = BasicMonster()
-        # enemy = Entity(10, 10, '@', tcod.red, 'Enemy solider', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component)
-        # entities.append(enemy)
+        fighter_component = Fighter(hp = 10, defense = 0, power = 3)
+        ai_component = BasicMonster()
+        enemy = Entity(10, 10, '@', tcod.red, 'Enemy solider', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component)
+        entities.append(enemy)
         #
         # breakable_component = Breakable(hp = 20)
         # crate = Entity(20, 20, '*', tcod.dark_sepia, 'Crate', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
@@ -105,6 +106,12 @@ class GameMap:
         zone_h = randint(int(map_height*2/3), int(map_height*3/4))
         zone_x = randint(0, map_width - zone_w - 1)
         zone_y = randint(0, map_height - zone_h - 1)
+
+        breakable_component = Breakable(hp = 40)
+        sandbag = Entity(0, 0, '#', tcod.dark_sepia, 'sandbag', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
+
+        
+
         for x in range(zone_x, zone_x + zone_w):
             for y in range(zone_y, zone_y + zone_h):
                 for entity in entities:
@@ -116,8 +123,8 @@ class GameMap:
         for r in range(max_buildings):
             w = randint(building_min_size, building_max_size)
             h = randint(building_min_size, building_max_size)
-            x = randint(zone_x, zone_x + zone_w - 1)
-            y = randint(zone_y, zone_y + zone_h - 1)
+            x = randint(zone_x, zone_x + zone_w - 1 - w)
+            y = randint(zone_y, zone_y + zone_h - 1 - h)
 
             new_building = Rect(x, y, w, h)
 
