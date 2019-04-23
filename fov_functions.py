@@ -13,8 +13,8 @@ def recompute_fov(fov_map, player, radius, entities, light_walls = True, algorit
     for entity in entities:
         if entity != player:
             if entity.sight_passes:
-                sight_passes = entity.sight_passes
-            sight_passes = (not entity.blocks) or sight_passes
-            print(sight_blocked)
-            tcod.map_set_properties(fov_map, entity.x, entity.y, sight_passes, not entity.blocks)
+                sight_blocked = entity.blocks and not entity.sight_passes
+            else:
+                sight_blocked = entity.blocks
+            tcod.map_set_properties(fov_map, entity.x, entity.y, not sight_blocked, not entity.blocks)
     tcod.map_compute_fov(fov_map, player.x, player.y, radius, light_walls, algorithim)
