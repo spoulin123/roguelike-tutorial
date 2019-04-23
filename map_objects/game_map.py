@@ -42,7 +42,7 @@ class GameMap:
 
         fighter_component = Fighter(hp = 10, defense = 0, power = 3)
         ai_component = BasicMonster()
-        enemy = Entity(10, 10, '@', tcod.red, 'Enemy solider', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component)
+        enemy = Entity(10, 10, '@', tcod.red, 'Enemy solider', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component, sight_passes = True)
         entities.append(enemy)
         #
         # breakable_component = Breakable(hp = 20)
@@ -110,7 +110,7 @@ class GameMap:
         breakable_component = Breakable(hp = 40)
         sandbag = Entity(0, 0, '#', tcod.dark_sepia, 'sandbag', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
 
-        
+
 
         for x in range(zone_x, zone_x + zone_w):
             for y in range(zone_y, zone_y + zone_h):

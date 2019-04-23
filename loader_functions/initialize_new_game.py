@@ -84,6 +84,8 @@ def get_game_variables(constants):
         constants['map_width'], constants['map_height'], player, entities,
         constants['max_monsters_per_room'], constants['max_items_per_building'])
 
+    #print(entities)
+
     world_map = WorldMap(10, 10, 0, 0, game_map)
 
     message_log = MessageLog(constants['message_x'], constants['message_width'],

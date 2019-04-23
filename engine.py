@@ -150,6 +150,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
         #Current errors:
         # (FIXED) x and y are being set to default make_map values in opposite moves
         # diagonal moves off the edge of the map cause a crash
+        # !!!FOCUS!!! entity lists are not attached to maps, so buildings remain while entities refresh
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
             destination_x = player.x + dx
@@ -164,6 +165,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
                         constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x+1, world_map.y, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
+                    entities = #
                     destination_x = 0
                     dx = 0
                     player.x = 0
@@ -182,6 +184,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
                         constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x, world_map.y-1, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
+                    #entities = #
                     destination_y = 0
                     dy = 0
                     player.y = 0
