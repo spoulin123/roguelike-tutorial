@@ -158,14 +158,9 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
 
             if destination_x == current_map.width:
                 if world_map.x < 9:
-                    #entities = [player]
-                    game_map = GameMap(constants['map_width'], constants['map_height'])
-                    game_map.make_map(constants['max_buildings'], constants['building_min_size'], constants['building_max_size'],
-                        constants['map_width'], constants['map_height'], player, entities,
-                        constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x+1, world_map.y, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
-                    #entities = #
+                    entities = current_map.entities
                     destination_x = 0
                     dx = 0
                     player.x = 0
@@ -177,14 +172,9 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
                 print(str(world_map.x)+" ,"+str(world_map.y))
             elif destination_y == current_map.height:
                 if world_map.y > 0:
-                    #entities = [player]
-                    game_map = GameMap(constants['map_width'], constants['map_height'])
-                    game_map.make_map(constants['max_buildings'], constants['building_min_size'], constants['building_max_size'],
-                        constants['map_width'], constants['map_height'], player, entities,
-                        constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x, world_map.y-1, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
-                    #entities = #
+                    entities = current_map.entities
                     destination_y = 0
                     dy = 0
                     player.y = 0
@@ -196,13 +186,9 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
                 print(str(world_map.x)+" ,"+str(world_map.y))
             elif destination_x == -1:
                 if world_map.x > 0:
-                    #entities = [player]
-                    game_map = GameMap(constants['map_width'], constants['map_height'])
-                    game_map.make_map(constants['max_buildings'], constants['building_min_size'], constants['building_max_size'],
-                        constants['map_width'], constants['map_height'], player, entities,
-                        constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x-1, world_map.y, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
+                    entities = current_map.entities
                     destination_x = current_map.width-1
                     dx = 0
                     player.x = current_map.width-1
@@ -214,13 +200,9 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
                 print(str(world_map.x)+" ,"+str(world_map.y))
             elif destination_y == -1:
                 if world_map.y < 9:
-                    #entities = [player]
-                    game_map = GameMap(constants['map_width'], constants['map_height'])
-                    game_map.make_map(constants['max_buildings'], constants['building_min_size'], constants['building_max_size'],
-                        constants['map_width'], constants['map_height'], player, entities,
-                        constants['max_monsters_per_room'], constants['max_items_per_building'])
                     world_map.move_to(world_map.x, world_map.y+1, game_map)
                     current_map = world_map.maps[world_map.x][world_map.y]
+                    entities = current_map.entities
                     destination_y = current_map.height-1
                     dy = 0
                     player.y = current_map.height-1
@@ -251,7 +233,6 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
                 if entity.item and entity.x == player.x and entity.y == player.y:
                     pickup_results = player.inventory.add_item(entity)
                     player_turn_results.extend(pickup_results)
-
                     break
             else:
                 message_log.add_message(Message('There is nothing here to pick up', tcod.yellow))

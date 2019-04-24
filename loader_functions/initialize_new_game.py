@@ -81,7 +81,7 @@ def get_game_variables(constants):
 
     game_map = GameMap(constants['map_width'], constants['map_height'])
     game_map.make_map(constants['max_buildings'], constants['building_min_size'], constants['building_max_size'],
-        constants['map_width'], constants['map_height'], player, entities,
+        constants['map_width'], constants['map_height'], player, game_map.entities,
         constants['max_monsters_per_room'], constants['max_items_per_building'])
 
     #print(entities)
