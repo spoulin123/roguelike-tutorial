@@ -165,11 +165,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
 
             if destination_x == current_map.width:
                 if world_map.x < 9:
-<<<<<<< HEAD
                     world_map.move_to(world_map.x+1, world_map.y, constants, player)
-=======
-                    world_map.move_to(world_map.x+1, world_map.y, game_map)
->>>>>>> 0b994257409b6603a5609426a45dbfae98cdd32d
                     current_map = world_map.maps[world_map.x][world_map.y]
                     entities = current_map.entities
                     destination_x = 0
@@ -183,11 +179,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
                 print(str(world_map.x)+" ,"+str(world_map.y))
             elif destination_y == current_map.height:
                 if world_map.y > 0:
-<<<<<<< HEAD
                     world_map.move_to(world_map.x, world_map.y-1, constants, player)
-=======
-                    world_map.move_to(world_map.x, world_map.y-1, game_map)
->>>>>>> 0b994257409b6603a5609426a45dbfae98cdd32d
                     current_map = world_map.maps[world_map.x][world_map.y]
                     entities = current_map.entities
                     destination_y = 0
@@ -201,11 +193,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
                 print(str(world_map.x)+" ,"+str(world_map.y))
             elif destination_x == -1:
                 if world_map.x > 0:
-<<<<<<< HEAD
                     world_map.move_to(world_map.x-1, world_map.y, constants, player)
-=======
-                    world_map.move_to(world_map.x-1, world_map.y, game_map)
->>>>>>> 0b994257409b6603a5609426a45dbfae98cdd32d
                     current_map = world_map.maps[world_map.x][world_map.y]
                     entities = current_map.entities
                     destination_x = current_map.width-1
@@ -219,11 +207,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
                 print(str(world_map.x)+" ,"+str(world_map.y))
             elif destination_y == -1:
                 if world_map.y < 9:
-<<<<<<< HEAD
                     world_map.move_to(world_map.x, world_map.y+1, constants, player)
-=======
-                    world_map.move_to(world_map.x, world_map.y+1, game_map)
->>>>>>> 0b994257409b6603a5609426a45dbfae98cdd32d
                     current_map = world_map.maps[world_map.x][world_map.y]
                     entities = current_map.entities
                     destination_y = current_map.height-1
