@@ -78,10 +78,17 @@ def get_game_variables(constants):
     inventory_component = Inventory(26)
     player = Entity(0, 0, '@', tcod.white, 'Player', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, inventory = inventory_component)
 
+<<<<<<< HEAD
     #game_map = GameMap(constants['map_width'], constants['map_height'])
     #game_map.make_map(constants['max_buildings'], constants['building_min_size'], constants['building_max_size'],
         #constants['map_width'], constants['map_height'], player, game_map.entities,
         #constants['max_monsters_per_room'], constants['max_items_per_building'])
+=======
+    game_map = GameMap(constants['map_width'], constants['map_height'])
+    game_map.make_map(constants['max_buildings'], constants['building_min_size'], constants['building_max_size'],
+        constants['map_width'], constants['map_height'], player, game_map.entities,
+        constants['max_monsters_per_room'], constants['max_items_per_building'])
+>>>>>>> 0b994257409b6603a5609426a45dbfae98cdd32d
 
     #print(entities)
 
