@@ -16,6 +16,7 @@ class GameMap:
         self.width = width
         self.height = height
         self.tiles = self.initialize_tiles()
+        self.entities = []
 
     #make_map(): Tile(True)
     #make_map2(): Tile(False)
@@ -25,16 +26,16 @@ class GameMap:
 
     #needs to choose type of map and set it up
     def make_map(self, max_buildings, building_min_size, building_max_size, map_width, map_height, player, entities, max_enemies, max_items_per_building):
-
+        entities.append(player)
 
         #ADD TO FUNCTION CALL LATER
-        max_trees = 300
+        max_trees = 200
         for r in range(max_trees):
             x = randint(0, map_width - 1)
             y = randint(0, map_height - 1)
             breakable_component = Breakable(hp = 20)
             tree = Entity(x, y, '*', tcod.desaturated_green, 'Tree', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
-            entities.append(tree)
+            #entities.append(tree)
 
         #self.set_up_wilderness(entities, map_width, map_height)
         self.set_up_outpost(entities, map_width, map_height, player, max_buildings, building_min_size, building_max_size)
