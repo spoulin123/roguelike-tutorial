@@ -6,6 +6,7 @@ from entity import Entity
 from game_messages import MessageLog
 from game_states import GameStates
 from map_objects.game_map import GameMap
+from map_objects.world_map import WorldMap
 from render_functions import RenderOrder
 
 def get_constants():
@@ -25,16 +26,18 @@ def get_constants():
     map_width = 80
     map_height = 43
 
-    room_max_size = 10
-    room_min_size = 6
-    max_rooms = 30
+    building_max_size = 8
+    building_min_size = 6
+    #make_map2(): 30
+    #make_map(): 3
+    max_buildings = 5
 
     fov_algorithim = 0
     fov_light_walls = True
-    fov_radius = 10
+    fov_radius = 15
 
     max_monsters_per_room = 3
-    max_items_per_room = 2
+    max_items_per_building = 2
 
     colors = {
         'dark_wall': tcod.Color(0, 0, 100),
@@ -57,14 +60,14 @@ def get_constants():
         'message_height': message_height,
         'map_width': map_width,
         'map_height': map_height,
-        'room_max_size': room_max_size,
-        'room_min_size': room_min_size,
-        'max_rooms': max_rooms,
+        'building_max_size': building_max_size,
+        'building_min_size': building_min_size,
+        'max_buildings': max_buildings,
         'fov_algorithm': fov_algorithim,
         'fov_light_walls': fov_light_walls,
         'fov_radius': fov_radius,
         'max_monsters_per_room': max_monsters_per_room,
-        'max_items_per_room': max_items_per_room,
+        'max_items_per_building': max_items_per_building,
         'colors': colors
     }
 
@@ -74,16 +77,20 @@ def get_game_variables(constants):
     fighter_component = Fighter(hp = 30, defense = 2, power = 5)
     inventory_component = Inventory(26)
     player = Entity(0, 0, '@', tcod.white, 'Player', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, inventory = inventory_component)
-    entities = [player]
 
-    game_map = GameMap(constants['map_width'], constants['map_height'])
-    game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
-        constants['map_width'], constants['map_height'], player, entities,
-        constants['max_monsters_per_room'], constants['max_items_per_room'])
+    #game_map = GameMap(constants['map_width'], constants['map_height'])
+    #game_map.make_map(constants['max_buildings'], constants['building_min_size'], constants['building_max_size'],
+        #constants['map_width'], constants['map_height'], player, game_map.entities,
+        #constants['max_monsters_per_room'], constants['max_items_per_building'])
+
+    #print(entities)
+
+    world_map = WorldMap(10, 10, 0, 0, constants, player)
+    entities = world_map.maps[world_map.x][world_map.y].entities
 
     message_log = MessageLog(constants['message_x'], constants['message_width'],
         constants['message_height'])
 
     game_state = GameStates.PLAYER_TURN
 
-    return player, entities, game_map, message_log, game_state
+    return player, entities, world_map, message_log, game_state

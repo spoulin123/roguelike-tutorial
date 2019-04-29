@@ -5,18 +5,29 @@
 # (DONE) 3. Make lightning not target corpses
 # 4. Show fireball radius during targeting
 # 5. Get tech department to install shelve2
+# 6. Add list of common items to quickly add in game
+
+#Current state of world map:
+# -Only moving off right side is currently implemented
+# -Player is placed at a location defined by the game map
+# -Entities are not deleted. They cant simply be deleted because the player must be able to return to maps
+#   -Each GameMap needs a list of entities for itself
 
 import tcod
 
-from entity import get_blocking_entities_at_location
-from input_handlers import handle_keys
+from entity import get_blocking_entities_at_location, get_fighting_entities_at_location
+from input_handlers import handle_keys, handle_main_menu
 from render_functions import clear_all, render_all
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
-from death_functions import kill_player, kill_monster
+from death_functions import kill_player, kill_monster, destroy_object
 from game_messages import Message
 from target import Target
 from loader_functions.initialize_new_game import get_constants, get_game_variables
+from loader_functions.data_loaders import load_game, save_game
+from menus import main_menu, message_box
+from map_objects.world_map import WorldMap
+from map_objects.game_map import GameMap
 
 def main():
     constants = get_constants()
@@ -33,11 +44,74 @@ def main():
     con = tcod.console_new(constants['screen_width'], constants['screen_height'])
     panel = tcod.console_new(constants['screen_width'], constants['panel_height'])
 
-    player, entities, game_map, message_log, game_state = get_game_variables(constants)
+    player = None
+    entities = []
+    world_map = None
+    message_log = None
+    game_state = None
+
+    show_main_menu = True
+    show_load_error_message = False
+
+    main_menu_background_image = tcod.image_load('menu_background.png')
+
+    key = tcod.Key()
+    mouse = tcod.Mouse()
+
+    while not tcod.console_is_window_closed():
+        tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)
+
+        if show_main_menu:
+            main_menu(con, main_menu_background_image, constants['screen_width'], constants['screen_height'])
+
+            if show_load_error_message:
+                message_box(con, 'No save game to load', 50, constants['screen_width'], constants['screen_height'])
+
+            tcod.console_flush()
+
+            action = handle_main_menu(key)
+
+            new_game = action.get('new_game')
+            load_saved_game = action.get('load_game')
+            exit_game = action.get('exit_game')
+
+            #get better method for main menu item selection
+
+            if show_load_error_message and (new_game or load_saved_game or exit_game):
+                show_load_error_message = False
+            elif new_game:
+                player, entities, world_map, message_log, game_state = get_game_variables(constants)
+                game_state = GameStates.PLAYER_TURN
+
+                show_main_menu = False
+            elif load_saved_game:
+                try:
+                    player, entities, world_map, message_log, game_state = load_game()
+                    show_main_menu = False
+                except FileNotFoundError:
+                    show_load_error_message = True
+            elif exit_game:
+                break
+
+        else:
+            tcod.console_clear(con)
+            play_game(player, entities, world_map, message_log, game_state, con, panel, constants)
+
+            show_main_menu = True
+
+def play_game(player, entities, world_map, message_log, game_state, con, panel, constants):
+    print("entities: ")
+    for entity in entities:
+        print(entity.name)
+    current_map = world_map.maps[world_map.x][world_map.y]
+    entities = current_map.entities
+    print("entities: ")
+    for entity in entities:
+        print(entity.name)
 
     fov_recompute = True
 
-    fov_map = initialize_fov(game_map)
+    fov_map = initialize_fov(current_map)
 
     key = tcod.Key()
     mouse = tcod.Mouse()
@@ -53,10 +127,11 @@ def main():
         tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)
 
         if fov_recompute:
-            recompute_fov(fov_map, player.x, player.y, constants['fov_radius'],
+            fov_map = initialize_fov(current_map)
+            recompute_fov(fov_map, player, constants['fov_radius'], entities,
                 constants['fov_light_walls'], constants['fov_algorithm'])
 
-        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute,
+        render_all(con, panel, entities, player, current_map, fov_map, fov_recompute,
             message_log,  constants['screen_width'], constants['screen_height'], constants['bar_width'],
             constants['panel_height'], constants['panel_y'], constants['colors'], game_state, player_target)
 
@@ -79,16 +154,81 @@ def main():
 
         player_turn_results = []
 
+        #Current errors:
+        # (FIXED) x and y are being set to default make_map values in opposite moves
+        # diagonal moves off the edge of the map cause a crash
+        # !!!FOCUS!!! entity lists are not attached to maps, so buildings remain while entities refresh
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
             destination_x = player.x + dx
             destination_y = player.y + dy
 
-            if not game_map.is_blocked(destination_x, destination_y):
+            if destination_x == current_map.width:
+                if world_map.x < 9:
+                    world_map.move_to(world_map.x+1, world_map.y, constants, player)
+                    current_map = world_map.maps[world_map.x][world_map.y]
+                    entities = current_map.entities
+                    destination_x = 0
+                    dx = 0
+                    player.x = 0
+                    player.y = destination_y
+                else:
+                    destination_x = player.x
+                    destination_y = player.y
+                    message_log.add_message(Message('You can\'t go that way', tcod.blue))
+                print(str(world_map.x)+" ,"+str(world_map.y))
+            elif destination_y == current_map.height:
+                if world_map.y > 0:
+                    world_map.move_to(world_map.x, world_map.y-1, constants, player)
+                    current_map = world_map.maps[world_map.x][world_map.y]
+                    entities = current_map.entities
+                    destination_y = 0
+                    dy = 0
+                    player.y = 0
+                    player.x = destination_x
+                else:
+                    destination_x = player.x
+                    destination_y = player.y
+                    message_log.add_message(Message('You can\'t go that way', tcod.blue))
+                print(str(world_map.x)+" ,"+str(world_map.y))
+            elif destination_x == -1:
+                if world_map.x > 0:
+                    world_map.move_to(world_map.x-1, world_map.y, constants, player)
+                    current_map = world_map.maps[world_map.x][world_map.y]
+                    entities = current_map.entities
+                    destination_x = current_map.width-1
+                    dx = 0
+                    player.x = current_map.width-1
+                    player.y = destination_y
+                else:
+                    destination_x = player.x
+                    destination_y = player.y
+                    message_log.add_message(Message('You can\'t go that way', tcod.blue))
+                print(str(world_map.x)+" ,"+str(world_map.y))
+            elif destination_y == -1:
+                if world_map.y < 9:
+                    world_map.move_to(world_map.x, world_map.y+1, constants, player)
+                    current_map = world_map.maps[world_map.x][world_map.y]
+                    entities = current_map.entities
+                    destination_y = current_map.height-1
+                    dy = 0
+                    player.y = current_map.height-1
+                    player.x = destination_x
+                else:
+                    destination_x = player.x
+                    destination_y = player.y
+                    message_log.add_message(Message('You can\'t go that way', tcod.blue))
+                print(str(world_map.x)+" ,"+str(world_map.y))
+
+            if not current_map.is_blocked(destination_x, destination_y):
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
                 if target:
-                    attack_results = player.fighter.attack(target)
-                    player_turn_results.extend(attack_results)
+                    if target.fighter and target != player:
+                        attack_results = player.fighter.attack(target)
+                        player_turn_results.extend(attack_results)
+                    elif target.breakable:
+                        attack_results = player.fighter.attack(target)
+                        player_turn_results.extend(attack_results)
                 else:
                     player.move(dx, dy)
                     fov_recompute = True
@@ -100,7 +240,6 @@ def main():
                 if entity.item and entity.x == player.x and entity.y == player.y:
                     pickup_results = player.inventory.add_item(entity)
                     player_turn_results.extend(pickup_results)
-
                     break
             else:
                 message_log.add_message(Message('There is nothing here to pick up', tcod.yellow))
@@ -131,6 +270,8 @@ def main():
             elif game_state == GameStates.TARGETING:
                 player_turn_results.append({'targeting_cancelled': True})
             else:
+                save_game(player, entities, world_map, message_log, game_state)
+
                 return True
 
         if fullscreen:
@@ -150,6 +291,7 @@ def main():
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
+            destroyed_entity = player_turn_result.get('destroyed')
             item_added = player_turn_result.get('item_added')
             item_consumed = player_turn_result.get('consumed')
             item_dropped = player_turn_result.get('item_dropped')
@@ -169,6 +311,10 @@ def main():
                 else:
                     message = kill_monster(dead_entity)
 
+                message_log.add_message(message)
+
+            if destroyed_entity:
+                message = destroy_object(destroyed_entity)
                 message_log.add_message(message)
 
             if item_added:
@@ -195,7 +341,7 @@ def main():
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
                 if entity.ai:
-                    enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
+                    enemy_turn_results = entity.ai.take_turn(player, fov_map, current_map, entities)
 
                     for enemy_turn_result in enemy_turn_results:
                         message = enemy_turn_result.get('message')

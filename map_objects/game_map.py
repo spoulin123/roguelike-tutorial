@@ -5,6 +5,7 @@ from map_objects.rectangle import Rect
 from random import randint
 from components.ai import BasicMonster
 from components.fighter import Fighter
+from components.breakable import Breakable
 from render_functions import RenderOrder
 from components.item import Item
 from item_functions import heal, cast_lightning, cast_fireball
@@ -20,35 +21,39 @@ class GameMap:
         self.width = width
         self.height = height
         self.tiles = self.initialize_tiles()
+        self.entities = []
 
     def initialize_tiles(self):
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
         return tiles
 
-    def make_map2(self, max_buildings, building_min_size, building_max_size, map_width, map_height, player, entities, max_enemies, max_items_per_room):
-        buildings = []
-        num_buildings = 0
-        for r in range(max_buildings):
-            w = randint(building_min_size, building_max_size)
-            h = randint(building_min_size, building_max_size)
-            x = randint(0, map_width - w - 1)
-            y = randint(0, map_height - h - 1)
+    #needs to choose type of map and set it up
+    def make_map(self, max_buildings, building_min_size, building_max_size, map_width, map_height, player, entities, max_enemies, max_items_per_building):
+        entities.append(player)
 
-            new_building = Rect(x, y, w, h)
+        #ADD TO FUNCTION CALL LATER
+        max_trees = 200
+        for r in range(max_trees):
+            x = randint(0, map_width - 1)
+            y = randint(0, map_height - 1)
+            breakable_component = Breakable(hp = 20)
+            tree = Entity(x, y, '*', tcod.desaturated_green, 'Tree', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
+            #entities.append(tree)
 
-            for other_building in buildings:
-                if new_building.intersect(other_building):
-                    break
-            else:
-                self.create_building(new_building)
+        #self.set_up_wilderness(entities, map_width, map_height)
+        self.set_up_outpost(entities, map_width, map_height, player, max_buildings, building_min_size, building_max_size)
+        self.set_up_wilderness(entities, map_width, map_height)
 
-                (new_x, new_y) = new_building.center()
+        fighter_component = Fighter(hp = 10, defense = 0, power = 3)
+        ai_component = BasicMonster()
+        enemy = Entity(10, 10, '@', tcod.red, 'Enemy solider', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component, sight_passes = True)
+        entities.append(enemy)
+        #
+        # breakable_component = Breakable(hp = 20)
+        # crate = Entity(20, 20, '*', tcod.dark_sepia, 'Crate', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
+        # entities.append(crate)
 
-                if num_buildings == 0:
-                    player.x = new_x
-                    player.y = new_y
-
-    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room):
+    def make_map2(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room):
         rooms = []
         num_rooms = 0
         for r in range(max_rooms):
@@ -84,6 +89,69 @@ class GameMap:
 
             rooms.append(new_room)
             num_rooms += 1
+
+    def set_up_wilderness(self, entities, map_width, map_height):
+        for i in range(randint(1, 5)):
+            #later change to a getCreature call to randomly add animals
+            fighter_component = Fighter(hp = 10, defense = 0, power = 3)
+            ai_component = BasicMonster()
+            x = randint(0, map_width - 1)
+            y = randint(0, map_height - 1)
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]) and not self.is_blocked(x, y):
+                enemy = Entity(x, y, 'T', tcod.orange, 'Tiger', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component)
+                entities.append(enemy)
+
+    #notes:
+    # -make it so outpost zone can't touch the edge of the screen
+    # -add enemies
+    # -add barriers, crates, items, etc.
+    def set_up_outpost(self, entities, map_width, map_height, player, max_buildings, building_min_size, building_max_size):
+        zone_w = randint(int(map_width*2/3), int(map_width*3/4))
+        zone_h = randint(int(map_height*2/3), int(map_height*3/4))
+        zone_x = randint(0, map_width - zone_w - 1)
+        zone_y = randint(0, map_height - zone_h - 1)
+
+        breakable_component = Breakable(hp = 40)
+        sandbag = Entity(0, 0, '#', tcod.dark_sepia, 'sandbag', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
+
+
+
+        for x in range(zone_x, zone_x + zone_w):
+            for y in range(zone_y, zone_y + zone_h):
+                for entity in entities:
+                    if not entity == player and entity.x == x and entity.y == y:
+                        entities.remove(entity)
+
+        buildings = []
+        num_buildings = 0
+        for r in range(max_buildings):
+            w = randint(building_min_size, building_max_size)
+            h = randint(building_min_size, building_max_size)
+            x = randint(zone_x, zone_x + zone_w - 1 - w)
+            y = randint(zone_y, zone_y + zone_h - 1 - h)
+
+            new_building = Rect(x, y, w, h)
+
+            for other_building in buildings:
+                if new_building.intersect(other_building):
+                    break
+            else:
+                self.create_building(new_building)
+
+                (new_x, new_y) = new_building.center()
+
+                if num_buildings == 0:
+                    player.x = new_x
+                    player.y = new_y
+
+                for x in range(x, x+w):
+                    for y in range(y, y + h):
+                        for entity in entities:
+                            if not entity == player and entity.x == x and entity.y == y:
+                                entities.remove(entity)
+
+                buildings.append(new_building)
+
 
     def create_room(self, room):
         for x in range(room.x1 + 1, room.x2):
