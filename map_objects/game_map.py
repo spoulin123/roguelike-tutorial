@@ -24,7 +24,7 @@ class GameMap:
         self.entities = []
 
     def initialize_tiles(self):
-        tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
+        tiles = [[Tile(False) for y in range(self.height)] for x in range(self.width)]
         return tiles
 
     #needs to choose type of map and set it up

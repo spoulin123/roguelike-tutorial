@@ -13,6 +13,10 @@
 # -Entities are not deleted. They cant simply be deleted because the player must be able to return to maps
 #   -Each GameMap needs a list of entities for itself
 
+#Loading errors:
+# Loading a game, exiting the map that was loaded on to, and then returning it causes the player to be invisible
+# Error is related to entities = current_map.entities
+
 import tcod
 
 from entity import get_blocking_entities_at_location, get_fighting_entities_at_location
@@ -100,14 +104,14 @@ def main():
             show_main_menu = True
 
 def play_game(player, entities, world_map, message_log, game_state, con, panel, constants):
-    print("entities: ")
-    for entity in entities:
-        print(entity.name)
+    # print("entities: ")
+    # for entity in entities:
+    #     print(entity.name)
     current_map = world_map.maps[world_map.x][world_map.y]
-    entities = current_map.entities
-    print("entities: ")
-    for entity in entities:
-        print(entity.name)
+    # entities = current_map.entities
+    # print("entities: ")
+    # for entity in entities:
+    #     print(entity.name)
 
     fov_recompute = True
 
