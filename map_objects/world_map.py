@@ -23,3 +23,5 @@ class WorldMap:
                 constants['map_width'], constants['map_height'], player, game_map.entities,
                 constants['max_monsters_per_room'], constants['max_items_per_building'])
             self.maps[x][y] = game_map
+        else:
+            self.maps[x][y].entities.append(player)

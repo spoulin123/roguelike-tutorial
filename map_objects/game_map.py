@@ -29,7 +29,7 @@ class GameMap:
 
     #needs to choose type of map and set it up
     def make_map(self, max_buildings, building_min_size, building_max_size, map_width, map_height, player, entities, max_enemies, max_items_per_building):
-        entities.append(player)
+
 
         #ADD TO FUNCTION CALL LATER
         max_trees = 200
@@ -48,6 +48,7 @@ class GameMap:
         ai_component = BasicMonster()
         enemy = Entity(10, 10, '@', tcod.red, 'Enemy solider', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component, sight_passes = True)
         entities.append(enemy)
+        entities.append(player)
         #
         # breakable_component = Breakable(hp = 20)
         # crate = Entity(20, 20, '*', tcod.dark_sepia, 'Crate', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)

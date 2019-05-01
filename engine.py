@@ -162,6 +162,14 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
         # (FIXED) x and y are being set to default make_map values in opposite moves
         # diagonal moves off the edge of the map cause a crash
         # !!!FOCUS!!! entity lists are not attached to maps, so buildings remain while entities refresh
+
+        # Need to readd player to returning maps
+
+        #!!!!!!!!!
+        #WHEN A USER SAVES AND LOADS ON A GAME_MAP, A PERMANENT "DUMB" COPY OF
+        #THEIR BODY IS LEFT AT THE POSITION THEY SAVED AND LOADED
+        #UPON SUBSEQUENT RETURNS TO THE MAP
+        #!!!!!!!!!
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
             destination_x = player.x + dx
