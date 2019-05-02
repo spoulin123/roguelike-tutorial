@@ -169,6 +169,9 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
         #WHEN A USER SAVES AND LOADS ON A GAME_MAP, A PERMANENT "DUMB" COPY OF
         #THEIR BODY IS LEFT AT THE POSITION THEY SAVED AND LOADED
         #UPON SUBSEQUENT RETURNS TO THE MAP
+        #
+        #THE GLITCH ONLY OCCURS WHEN THE USER LEAVES THE MAP
+        #SOMEHOW, PLAYER IS KEPT IN ENTITIES OVER TRANSITIONS
         #!!!!!!!!!
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
