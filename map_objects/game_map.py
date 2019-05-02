@@ -8,7 +8,7 @@ from components.fighter import Fighter
 from components.breakable import Breakable
 from render_functions import RenderOrder
 from components.item import Item
-from item_functions import heal, cast_lightning, cast_fireball
+from item_functions import heal, cast_lightning, cast_fireball, throw_grenade
 from game_messages import Message
 
 #TO CHANGE TO NEW MAP GEN:
@@ -38,16 +38,17 @@ class GameMap:
             y = randint(0, map_height - 1)
             breakable_component = Breakable(hp = 20)
             tree = Entity(x, y, '*', tcod.desaturated_green, 'Tree', blocks = True, render_order = RenderOrder.ACTOR, breakable = breakable_component)
-            #entities.append(tree)
+            entities.append(tree)
 
         #self.set_up_wilderness(entities, map_width, map_height)
-        self.set_up_outpost(entities, map_width, map_height, player, max_buildings, building_min_size, building_max_size)
-        self.set_up_wilderness(entities, map_width, map_height)
+        #map type:
+        type_id = randint(0,2)
+        if type_id == 0:
+            self.set_up_outpost(entities, map_width, map_height, player, max_buildings, building_min_size, building_max_size, max_enemies)
+        else:
+            self.set_up_wilderness(entities, map_width, map_height)
 
-        fighter_component = Fighter(hp = 10, defense = 0, power = 3)
-        ai_component = BasicMonster()
-        enemy = Entity(10, 10, '@', tcod.red, 'Enemy solider', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component, sight_passes = True)
-        entities.append(enemy)
+
         entities.append(player)
         #
         # breakable_component = Breakable(hp = 20)
@@ -106,7 +107,7 @@ class GameMap:
     # -make it so outpost zone can't touch the edge of the screen
     # -add enemies
     # -add barriers, crates, items, etc.
-    def set_up_outpost(self, entities, map_width, map_height, player, max_buildings, building_min_size, building_max_size):
+    def set_up_outpost(self, entities, map_width, map_height, player, max_buildings, building_min_size, building_max_size, max_enemies):
         zone_w = randint(int(map_width*2/3), int(map_width*3/4))
         zone_h = randint(int(map_height*2/3), int(map_height*3/4))
         zone_x = randint(0, map_width - zone_w - 1)
@@ -152,6 +153,38 @@ class GameMap:
                                 entities.remove(entity)
 
                 buildings.append(new_building)
+
+            #place_entities(entities, etc.) should be added
+
+        for r in range(0, 5):#CHANGE TO A CONSTANT
+            x = randint(zone_x + 1, zone_x + zone_w - 1)
+            y = randint(zone_y + 1, zone_y + zone_h - 1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                item_chance = randint(0, 100)
+                if item_chance > 50:
+                    item_component = Item(use_function = throw_grenade,
+                        targeting=True, targeting_message=Message('Select the target of your grenade', tcod.light_cyan),
+                        damage=12, radius=3)
+                    item = Entity(x, y, '6', tcod.darker_green, 'Grenade', render_order=RenderOrder.ITEM, item=item_component)
+                else:
+                    item_component = Item(use_function = heal, amount = 4)
+                    item = Entity(x, y, '=', tcod.white, 'Bandage', render_order = RenderOrder.ITEM, item=item_component)
+
+                entities.append(item)
+
+        for r in range(0, max_enemies):
+            x = randint(zone_x + 1, zone_x + zone_w - 1)
+            y = randint(zone_y + 1, zone_y + zone_h - 1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                spawn_chance = randint(0, 100)
+                if spawn_chance > 0:
+                    fighter_component = Fighter(hp = 10, defense = 0, power = 3)
+                    ai_component = BasicMonster()
+                    enemy = Entity(x, y, '@', tcod.red, 'Enemy solider', blocks = True, render_order=RenderOrder.ACTOR, fighter = fighter_component, ai = ai_component, sight_passes = True)
+                    entities.append(enemy)
+
 
 
     def create_room(self, room):

@@ -36,7 +36,7 @@ def get_constants():
     fov_light_walls = True
     fov_radius = 15
 
-    max_monsters_per_room = 3
+    max_enemies = 6
     max_items_per_building = 2
 
     colors = {
@@ -66,7 +66,7 @@ def get_constants():
         'fov_algorithm': fov_algorithim,
         'fov_light_walls': fov_light_walls,
         'fov_radius': fov_radius,
-        'max_monsters_per_room': max_monsters_per_room,
+        'max_enemies': max_enemies,
         'max_items_per_building': max_items_per_building,
         'colors': colors
     }
