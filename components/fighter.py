@@ -35,4 +35,4 @@ class Fighter:
         else:
             results.append({"message" : Message('{0} attacks {1} but does no damage.'.format(self.owner.name.capitalize(), target.name))})
 
-        return results
+        return results 

@@ -173,6 +173,9 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
         #THE GLITCH ONLY OCCURS WHEN THE USER LEAVES THE MAP
         #SOMEHOW, PLAYER IS KEPT IN ENTITIES OVER TRANSITIONS
         #Each gamemap needs a copy of player? (maybe)
+
+        #If you save and load multiple times on one map before leaving it, the
+        #dumb copy spawns at the first position you saved and loaded at.
         #!!!!!!!!!
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
