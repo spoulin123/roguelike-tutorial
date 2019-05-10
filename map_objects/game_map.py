@@ -165,7 +165,7 @@ class GameMap:
                 if item_chance > 50:
                     item_component = Item(use_function = throw_grenade,
                         targeting=True, targeting_message=Message('Select the target of your grenade', tcod.light_cyan),
-                        damage=12, radius=3)
+                        damage=20, radius=3)
                     item = Entity(x, y, '6', tcod.darker_green, 'Grenade', render_order=RenderOrder.ITEM, item=item_component)
                 else:
                     item_component = Item(use_function = heal, amount = 4)

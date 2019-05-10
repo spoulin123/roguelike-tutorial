@@ -84,8 +84,12 @@ def throw_grenade(*args, **kwargs):
     results.append({'consumed': True, 'message': Message('The grenade explodes, damaging everything within {0} tiles.'.format(radius), tcod.orange)})
 
     for entity in entities:
-        if entity.distance(target_x, target_y) <= radius and entity.fighter and entity.fighter.hp > 0:
-            results.append({'message': Message('The greande hits {0} for {1} hit points.'.format(entity.name, damage), tcod.orange)})
-            results.extend(entity.fighter.take_damage(damage))
+        if entity.distance(target_x, target_y) <= radius:
+            if entity.fighter and entity.fighter.hp > 0:
+                results.append({'message': Message('The greande hits {0} for {1} hit points.'.format(entity.name, damage), tcod.orange)})
+                results.extend(entity.fighter.take_damage(damage))
+            elif entity.breakable and entity.breakable.hp > 0:
+                results.append({'message': Message('The greande hits {0} for {1} hit points.'.format(entity.name, damage), tcod.orange)})
+                results.extend(entity.breakable.take_damage(damage))
 
     return results
