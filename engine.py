@@ -4,8 +4,9 @@
     #(should be able to change targeting game state to accomplish this easily)
 # (DONE) 3. Make lightning not target corpses
 # 4. Show fireball radius during targeting
-# 5. Get tech department to install shelve2
+# (DONE) 5. Get tech department to install shelve2
 # 6. Add list of common items to quickly add in game
+# 7. Add health bar for the last enemy damaged (and still alive + on map) at the top of the screen
 
 #Current state of world map:
 # -Only moving off right side is currently implemented
@@ -86,11 +87,12 @@ def main():
             elif new_game:
                 player, entities, world_map, message_log, game_state = get_game_variables(constants)
                 game_state = GameStates.PLAYER_TURN
+                current_enemy = None
 
                 show_main_menu = False
             elif load_saved_game:
                 try:
-                    player, entities, world_map, message_log, game_state = load_game()
+                    player, entities, world_map, message_log, game_state, current_enemy = load_game()
                     show_main_menu = False
                 except FileNotFoundError:
                     show_load_error_message = True
@@ -99,11 +101,11 @@ def main():
 
         else:
             tcod.console_clear(con)
-            play_game(player, entities, world_map, message_log, game_state, con, panel, constants)
+            play_game(player, entities, world_map, message_log, game_state, current_enemy, con, panel, constants)
 
             show_main_menu = True
 
-def play_game(player, entities, world_map, message_log, game_state, con, panel, constants):
+def play_game(player, entities, world_map, message_log, game_state, current_enemy, con, panel, constants):
     # print("entities: ")
     # for entity in entities:
     #     print(entity.name)
@@ -125,6 +127,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
     targeting_item = None
     player_target = Target(0,0)
 
+
     #main game loop
     while not tcod.console_is_window_closed():
         #updates the key and mouse variables with any key or mouse events
@@ -137,7 +140,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
 
         render_all(con, panel, entities, player, current_map, fov_map, fov_recompute,
             message_log,  constants['screen_width'], constants['screen_height'], constants['bar_width'],
-            constants['panel_height'], constants['panel_y'], constants['colors'], game_state, player_target)
+            constants['panel_height'], constants['panel_y'], constants['colors'], game_state, current_enemy, player_target)
 
         tcod.console_flush()
 
@@ -289,7 +292,7 @@ def play_game(player, entities, world_map, message_log, game_state, con, panel, 
             elif game_state == GameStates.TARGETING:
                 player_turn_results.append({'targeting_cancelled': True})
             else:
-                save_game(player, entities, world_map, message_log, game_state)
+                save_game(player, entities, world_map, message_log, game_state, current_enemy)
 
                 return True
 

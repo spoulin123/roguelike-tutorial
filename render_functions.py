@@ -25,7 +25,7 @@ def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_c
 
 def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute,
     message_log, screen_width, screen_height, bar_width, panel_height, panel_y,
-    colors, game_state, player_target):
+    colors, game_state, current_enemy, player_target):
     if fov_recompute:
         for y in range(game_map.height):
             for x in range(game_map.width):
@@ -64,6 +64,8 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute,
         y += 1
 
     render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp, tcod.light_red, tcod.darker_red)
+    if current_enemy:
+        render_bar(con, int(screen_width/2)-int(bar_width/2), 1, bar_width, 'HP', player.current_enemy.hp, player.current_enemy.max_hp, tcod.light_red, tcod.darker_red)
 
     if game_state in (GameStates.LOOKING, GameStates.TARGETING):
         tcod.console_set_char_background(con, player_target.x, player_target.y, tcod.light_gray, tcod.BKGND_SET)
